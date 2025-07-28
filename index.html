@@ -29,7 +29,7 @@
 
     .typing-output {
       position: absolute;
-      top: 43%; /* ↓ 여기서 아래로 조금 내리고 싶으면 이 숫자 늘리면 됨 */
+      top: 43%;
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
@@ -97,13 +97,23 @@
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        const text = input.value;
+        const text = input.value.trim();
+        if (!text) return;
+
         input.value = "";
         let i = 0;
+
         const interval = setInterval(() => {
           if (i < text.length) {
             output.textContent += text[i];
             i++;
+
+            // 15줄 초과되면 리셋
+            const lines = output.textContent.split("\n");
+            if (lines.length >= 15) {
+              clearInterval(interval);
+              output.textContent = "";
+            }
           } else {
             clearInterval(interval);
             output.textContent += "\n";
