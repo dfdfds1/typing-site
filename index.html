@@ -7,73 +7,73 @@
   <style>
     body {
       margin: 0;
-      background-color: #fddcea;
+      background: url("25c507de-9ed0-4508-86ba-080e31974aac.png") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: 'Arial', sans-serif;
     }
 
-    .image-container {
+    .container {
       position: relative;
-      width: 95vw;
+      width: 100%;
       max-width: 1150px;
-      aspect-ratio: 2048 / 1061;
-      background-image: url("aba6559e-c89d-4cfc-a454-062d75962254.png");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
+      height: 700px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
     }
 
     .typing-output {
       position: absolute;
-      top: 36%;
-      left: 52%;
-      width: 38%;
-      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 55%;
+      width: 40%;
+      transform: translateY(-50%);
       font-size: 18px;
       color: #000;
       line-height: 1.6;
-      white-space: pre-wrap;
       word-break: break-word;
+      white-space: pre-wrap;
     }
 
     .typing-input {
       position: absolute;
-      bottom: 12%;
-      left: 8%;
-      width: 84%;
+      bottom: 110px;
+      left: 100px;
+      width: 85%;
       font-size: 16px;
       padding: 8px;
       border: none;
-      background: transparent;
       outline: none;
-      color: #333;
+      background-color: transparent;
+      color: #555;
     }
 
     @media (max-width: 768px) {
       .typing-output {
-        font-size: 14px;
-        top: 36%;
+        font-size: 16px;
+        top: 45%;
         left: 50%;
-        width: 80%;
-        transform: translateX(-50%);
+        width: 90%;
+        transform: translate(-50%, -50%);
       }
 
       .typing-input {
-        width: 80%;
-        left: 10%;
-        bottom: 10%;
-        font-size: 14px;
+        width: 90%;
+        left: 5%;
+        bottom: 100px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="image-container">
+  <div class="container">
     <div id="output" class="typing-output"></div>
-    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+    <input id="input" class="typing-input" type="text" placeholder="Type here..." />
   </div>
 
   <script>
@@ -99,3 +99,5 @@
   </script>
 </body>
 </html>
+이 코드 썼을 땐 이미지 잘나왔는데 방금 코드 적용하면
+하얀 바탕밖에 안나와
