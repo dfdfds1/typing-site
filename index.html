@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -16,14 +20,16 @@
       font-family: 'Nanum Myeongjo', Georgia, serif;
       overflow: hidden;
     }
+
     .container {
       position: relative;
       width: 100vw;
       height: 100vh;
     }
+
     .typing-output {
       position: absolute;
-      top: 44%;
+      top: 42%; /* ↓ 여기서 아래로 조금 내리고 싶으면 이 숫자 늘리면 됨 */
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
@@ -36,6 +42,7 @@
       text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
     }
+
     .typing-input {
       position: absolute;
       bottom: 16%;
@@ -50,6 +57,7 @@
       letter-spacing: 0.02em;
       z-index: 1;
     }
+
     .left-box {
       position: absolute;
       top: 24%;
@@ -59,10 +67,12 @@
       cursor: pointer;
       z-index: 2;
     }
+
     .media-container {
       width: 100%;
       height: 100%;
     }
+
     .media-container img,
     .media-container iframe {
       width: 100%;
@@ -102,7 +112,7 @@
       }
     });
 
-    window.insertMedia = function () {
+    function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
       const box = document.getElementById("mediaBox");
 
@@ -123,7 +133,8 @@
       } else {
         alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
-    };
+    }
   </script>
 </body>
 </html>
+
