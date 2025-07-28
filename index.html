@@ -6,9 +6,7 @@
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -80,82 +78,60 @@
       border: none;
     }
 
-    #preview {
+    #fileInput {
+      display: none;
+    }
+
+    .preview-box {
       position: absolute;
-      top: 30%;
+      top: 32%;
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
-      font-size: 16px;
+      font-size: 14px;
       color: #999;
       line-height: 1.4;
       white-space: pre-wrap;
-      word-break: break-word;
-      font-style: italic;
-      z-index: 0;
       pointer-events: none;
-    }
-
-    #fileInput {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      opacity: 0;
-      width: 80px;
-      height: 30px;
-      cursor: pointer;
-      z-index: 3;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 숨겨진 파일 업로드 -->
-    <input type="file" id="fileInput" accept=".txt" />
-
-    <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <!-- 미리보기 -->
-    <div id="preview"></div>
-
-    <!-- 출력/입력 -->
+    <div id="preview" class="preview-box"></div>
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+
+    <input type="file" id="fileInput" accept=".txt" onchange="loadLyrics(event)">
   </div>
 
   <script>
-    let lyrics = [];
-    let currentLine = 0;
     const input = document.getElementById("input");
     const output = document.getElementById("output");
     const preview = document.getElementById("preview");
+    const fileInput = document.getElementById("fileInput");
 
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        if (lyrics.length === 0) return;
-        const typed = input.value.trim();
-        input.value = "";
+    let lyrics = [];
+    let currentLine = 0;
 
-        let correctLine = lyrics[currentLine] || "";
-        let corrected = autoCorrect(typed, correctLine);
-
-        animateText(corrected);
-        currentLine++;
-        updatePreview();
-
-        if (output.textContent.split("\n").length > 15) {
-          output.textContent = "";
-        }
+    function updatePreview() {
+      if (lyrics.length === 0 || currentLine >= lyrics.length) {
+        preview.textContent = "";
+        return;
       }
-    });
+      let next = lyrics.slice(currentLine, currentLine + 2).join("\n");
+      preview.textContent = next;
+    }
 
-    function autoCorrect(typed, target) {
+    function autoCorrect(typed, correct) {
       let result = "";
-      for (let i = 0; i < target.length; i++) {
-        result += typed[i] === target[i] ? typed[i] : (target[i] || "");
+      for (let i = 0; i < correct.length; i++) {
+        result += typed[i] === correct[i] ? correct[i] : correct[i];
       }
       return result;
     }
@@ -169,26 +145,46 @@
         } else {
           clearInterval(interval);
           output.textContent += "\n";
+
+          // 15줄 초과 시 리셋
+          const lines = output.textContent.split("\n");
+          if (lines.length > 15) {
+            output.textContent = "";
+          }
         }
-      }, 50);
+      }, 30);
     }
 
-    function updatePreview() {
-      preview.textContent = (lyrics[currentLine] || "") + "\n" + (lyrics[currentLine + 1] || "");
-    }
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const typed = input.value.trim();
+        input.value = "";
 
-    document.getElementById("fileInput").addEventListener("change", function (e) {
-      const file = e.target.files[0];
+        let correctLine = lyrics[currentLine] || typed;
+        let corrected = lyrics.length ? autoCorrect(typed, correctLine) : typed;
+
+        animateText(corrected);
+
+        if (lyrics.length) {
+          currentLine++;
+          updatePreview();
+        }
+      }
+    });
+
+    function loadLyrics(event) {
+      const file = event.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function (event) {
-        lyrics = event.target.result.split("\n").map(line => line.trim());
+      reader.onload = function(e) {
+        const text = e.target.result;
+        lyrics = text.split(/\r?\n/).filter(line => line.trim() !== "");
         currentLine = 0;
         updatePreview();
       };
       reader.readAsText(file);
-    });
+    }
 
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
@@ -212,6 +208,14 @@
         alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
     }
+
+    // ⌨ Ctrl + O로 파일 열기 트리거
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'o') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
   </script>
 </body>
 </html>
