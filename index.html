@@ -3,80 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kawaii Typing Site</title>
+  <title>Typing Practice</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       padding: 0;
-      font-family: "Comic Sans MS", cursive;
-      background: #ffeef5;
-      color: #333;
+      background: url('배경이미지파일명.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
     }
-
     .container {
-      max-width: 900px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 1rem;
-    }
-
-    .header {
-      text-align: right;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    .box {
+      padding: 20px;
       display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      flex-direction: column;
+      gap: 15px;
     }
-
-    .left, .right {
-      flex: 1;
-      height: 250px;
+    .content {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .left-box, .right-box {
+      background: rgba(255, 255, 255, 0.4);
+      border: 2px solid #ffccdd;
       border-radius: 12px;
-      background: #ffe4ec;
-      border: 2px solid #f8a5c2;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      flex: 1 1 45%;
+      min-height: 200px;
+      overflow: auto;
     }
-
-    .left {
+    .left-box {
       cursor: pointer;
-      overflow: hidden;
     }
-
-    .left iframe, .left img {
+    .input-box {
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 2px solid #ffccdd;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    input[type="text"] {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    iframe, img {
+      width: 100%;
       border-radius: 8px;
     }
-
-    .output-box {
-      background: #ffe4ec;
-      border: 2px solid #f8a5c2;
-      border-radius: 12px;
-      padding: 1rem;
-      height: 150px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-
-    .input-box {
-      width: 100%;
-      font-size: 16px;
-      padding: 0.8rem;
-      border-radius: 10px;
-      border: 2px solid #f8a5c2;
-      background: #fff0f6;
-      box-sizing: border-box;
-      outline: none;
-    }
-
     @media (max-width: 600px) {
-      .box {
+      .content {
         flex-direction: column;
       }
     }
@@ -84,62 +68,46 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <a href="#">Sign Up</a> | <a href="#">Login</a>
-    </div>
-
-    <div class="box">
-      <div class="left" onclick="addMedia()" id="mediaBox">
-        <p style="text-align:center; opacity: 0.6;">Click to embed GIF or YouTube</p>
+    <div class="content">
+      <div class="left-box" onclick="insertMedia()" id="media-box">
+        <p style="text-align:center;opacity:0.6">(클릭해서 미디어 삽입)</p>
       </div>
-      <div class="right">
-        <div id="output" class="output-box"></div>
-      </div>
+      <div class="right-box" id="display-box"></div>
     </div>
-
-    <input
-      type="text"
-      class="input-box"
-      id="inputField"
-      placeholder="Type something and press Enter..."
-    />
+    <div class="input-box">
+      <input type="text" id="input-text" placeholder="여기에 입력 후 Enter">
+    </div>
   </div>
 
   <script>
-    const input = document.getElementById("inputField");
-    const output = document.getElementById("output");
+    const input = document.getElementById('input-text');
+    const displayBox = document.getElementById('display-box');
 
-    input.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
         const text = input.value;
-        input.value = "";
+        input.value = '';
         typeText(text);
       }
     });
 
     function typeText(text) {
-      let i = 0;
+      let index = 0;
+      const span = document.createElement('div');
+      displayBox.appendChild(span);
       const interval = setInterval(() => {
-        if (i < text.length) {
-          output.textContent += text[i];
-          i++;
+        if (index < text.length) {
+          span.textContent += text[index];
+          index++;
         } else {
           clearInterval(interval);
-          output.textContent += "\n";
         }
       }, 50);
     }
 
-    function addMedia() {
-      const url = prompt("Paste GIF or YouTube embed link:");
-      const mediaBox = document.getElementById("mediaBox");
-      if (url) {
-        mediaBox.innerHTML = url.includes("youtube")
-          ? `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`
-          : `<img src="${url}" />`;
-      }
-    }
-  </script>
-</body>
-</html>
+    function insertMedia() {
+      const url = prompt("YouTube URL or GIF URL을 붙여 넣으세요:");
+      const mediaBox = document.getElementById('media-box');
+      mediaBox.innerHTML = '';
+      if (!url) return;
+      if (url.includes('youtube.com') || url.includes('youtu
