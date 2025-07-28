@@ -39,4 +39,61 @@
       font-size: 16px;
       padding: 10px;
       border: none;
-      overfl
+      overflow: hidden;
+    }
+
+    .media-inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-inner iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .input-box {
+      position: absolute;
+      bottom: 13%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+    }
+
+    #typing-box {
+      width: 100%;
+      height: 100px;
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      color: #d86c9e;
+      padding: 10px;
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="box-container">
+    <div class="media-box" id="media">
+      <div class="media-inner">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="preview-box" id="preview"></div>
+  </div>
+
+  <div class="input-box">
+    <textarea id="typing-box" placeholder="여기에 타이핑..."></textarea>
+  </div>
+
+  <script>
+    const typingBox = document.getElementById('typing-box');
+    const preview = document.getElementById('preview');
+
+    typingBox.addEventListener('input', () => {
+      preview.textContent = typingBox.value;
+    });
+  </script>
+</body>
+</html>
