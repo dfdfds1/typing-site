@@ -7,65 +7,65 @@
   <style>
     body {
       margin: 0;
-      background: url("25c507de-9ed0-4508-86ba-080e31974aac.png") no-repeat center center fixed;
-      background-size: cover;
+      background: url("cc583f73-d682-4551-acda-e65f4540ed9a.png") no-repeat center center fixed;
+      background-size: contain;
+      background-color: #fddcea;
       font-family: 'Arial', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
 
     .container {
       position: relative;
-      width: 100%;
-      max-width: 1150px;
-      height: 700px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 20px;
+      width: 90%;
+      max-width: 1024px;
+      aspect-ratio: 2048 / 1061;
     }
 
     .typing-output {
       position: absolute;
-      top: 50%;
-      left: 55%;
-      width: 40%;
-      transform: translateY(-50%);
+      top: 36%;
+      left: 48%;
+      width: 45%;
       font-size: 18px;
+      transform: translate(-50%, -50%);
       color: #000;
       line-height: 1.6;
-      word-break: break-word;
       white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .typing-input {
       position: absolute;
-      bottom: 110px;
-      left: 100px;
-      width: 85%;
+      bottom: 12%;
+      left: 8%;
+      width: 84%;
       font-size: 16px;
       padding: 8px;
       border: none;
+      background: transparent;
       outline: none;
-      background-color: transparent;
-      color: #555;
+      color: #333;
+      text-align: left;
     }
 
     @media (max-width: 768px) {
       .typing-output {
-        font-size: 16px;
-        top: 45%;
+        font-size: 14px;
+        top: 34%;
+        width: 80%;
         left: 50%;
-        width: 90%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
       }
 
       .typing-input {
-        width: 90%;
-        left: 5%;
-        bottom: 100px;
+        width: 80%;
+        left: 10%;
+        bottom: 10%;
+        font-size: 14px;
       }
     }
   </style>
@@ -73,7 +73,7 @@
 <body>
   <div class="container">
     <div id="output" class="typing-output"></div>
-    <input id="input" class="typing-input" type="text" placeholder="Type here..." />
+    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
 
   <script>
@@ -99,7 +99,5 @@
   </script>
 </body>
 </html>
-
-
 
 
