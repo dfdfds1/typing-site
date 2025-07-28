@@ -1,97 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sanho's site</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanho Typing Practice</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #ffeef3;
-      font-family: "Arial", sans-serif;
+      background: url('https://dfdfds1.github.io/typing-site/assets/bg.png') no-repeat center top;
+      background-size: cover;
+      font-family: Arial, sans-serif;
       color: #d86c9e;
-      background-image: radial-gradient(white 1px, transparent 1px),
-                        radial-gradient(white 1px, transparent 1px);
-      background-size: 40px 40px;
-      background-position: 0 0, 20px 20px;
     }
 
     .container {
       max-width: 1000px;
-      margin: 50px auto;
-      padding: 30px;
-      background-color: #fff0f8;
+      margin: 100px auto;
+      background-color: rgba(255, 255, 255, 0.3);
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(255, 182, 193, 0.4);
-      border: 2px solid #f8b7cd;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(255, 192, 203, 0.6);
     }
 
-    .header {
-      text-align: center;
-      font-size: 2.5em;
-      font-weight: bold;
+    .nav {
       margin-bottom: 20px;
-      color: #f28bb2;
-      text-shadow: 1px 1px white;
+      font-size: 1.2em;
     }
 
-    .top-boxes {
+    .nav a {
+      text-decoration: none;
+      color: #5e4242;
+      margin-right: 15px;
+    }
+
+    .typing-area {
       display: flex;
       gap: 20px;
-      margin-bottom: 20px;
     }
 
-    .box {
+    .left-box, .right-box {
       flex: 1;
-      border-radius: 15px;
+      height: 240px;
+      background-color: #ffeaf2;
+      border-radius: 12px;
       border: 2px solid #f8b7cd;
-      background-color: #fff6fa;
-      padding: 10px;
-      min-height: 220px;
-      overflow: auto;
-      box-shadow: 0 5px 10px rgba(248, 169, 193, 0.3);
+      padding: 15px;
+      box-shadow: inset 0 0 10px rgba(255, 182, 193, 0.3);
+      overflow-y: auto;
     }
 
-    iframe, img {
-      max-width: 100%;
+    .typing-input {
+      margin-top: 20px;
+      background-color: #fff7fa;
+      padding: 15px;
       border-radius: 12px;
-    }
-
-    #preview {
-      white-space: pre-wrap;
-      font-size: 1.1em;
-      padding: 5px;
-    }
-
-    #typing-box {
+      border: 2px solid #f8b7cd;
       width: 100%;
-      height: 100px;
-      border: 2px solid #f5a8c8;
-      border-radius: 12px;
-      font-size: 1.1em;
-      padding: 10px;
+      font-size: 1em;
       resize: none;
-      background-color: #fffafd;
+      height: 100px;
       color: #d86c9e;
-      box-shadow: 0 4px 8px rgba(255, 182, 193, 0.2);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">Sanho’s site</div>
-
-    <div class="top-boxes">
-      <div class="box" id="media">
-        <!-- 이곳에 이미지/GIF/유튜브 영상 삽입 -->
-        <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-      </div>
-
-      <div class="box" id="preview"></div>
+    <div class="nav">
+      <a href="#">Sign up</a> | <a href="#">Login</a>
     </div>
 
-    <textarea id="typing-box" placeholder="여기에 입력해보세요..."></textarea>
+    <div class="typing-area">
+      <div class="left-box" id="media-box">
+        <!-- You can put an image, gif, or embed YouTube here -->
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="right-box" id="preview"></div>
+    </div>
+
+    <textarea class="typing-input" id="typing-box" placeholder="Type here..."></textarea>
   </div>
 
   <script>
