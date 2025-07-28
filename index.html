@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-
   <style>
     * {
       box-sizing: border-box;
@@ -41,16 +40,6 @@
       letter-spacing: 0.03em;
       text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    .fade-out {
-      animation: fadeOut 0.6s ease forwards;
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; }
     }
 
     .typing-input {
@@ -90,54 +79,115 @@
       object-fit: cover;
       border: none;
     }
+
+    #preview {
+      position: absolute;
+      top: 30%;
+      left: 58%;
+      width: 34%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      color: #999;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-style: italic;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #fileInput {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      opacity: 0;
+      width: 80px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 3;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- 숨겨진 파일 업로드 -->
+    <input type="file" id="fileInput" accept=".txt" />
+
     <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <!-- 텍스트 출력/입력 -->
+    <!-- 미리보기 -->
+    <div id="preview"></div>
+
+    <!-- 출력/입력 -->
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
 
   <script>
+    let lyrics = [];
+    let currentLine = 0;
     const input = document.getElementById("input");
     const output = document.getElementById("output");
+    const preview = document.getElementById("preview");
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        const text = input.value.trim();
-        if (!text) return;
-
+        if (lyrics.length === 0) return;
+        const typed = input.value.trim();
         input.value = "";
-        let i = 0;
 
-        const interval = setInterval(() => {
-          if (i < text.length) {
-            output.textContent += text[i];
-            i++;
+        let correctLine = lyrics[currentLine] || "";
+        let corrected = autoCorrect(typed, correctLine);
 
-            const lines = output.textContent.split("\n");
-            if (lines.length >= 15) {
-              clearInterval(interval);
+        animateText(corrected);
+        currentLine++;
+        updatePreview();
 
-              // 페이드 아웃 후 리셋
-              output.classList.add("fade-out");
-              setTimeout(() => {
-                output.textContent = "";
-                output.classList.remove("fade-out");
-              }, 600);
-            }
-          } else {
-            clearInterval(interval);
-            output.textContent += "\n";
-          }
-        }, 50);
+        if (output.textContent.split("\n").length > 15) {
+          output.textContent = "";
+        }
       }
+    });
+
+    function autoCorrect(typed, target) {
+      let result = "";
+      for (let i = 0; i < target.length; i++) {
+        result += typed[i] === target[i] ? typed[i] : (target[i] || "");
+      }
+      return result;
+    }
+
+    function animateText(text) {
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          output.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(interval);
+          output.textContent += "\n";
+        }
+      }, 50);
+    }
+
+    function updatePreview() {
+      preview.textContent = (lyrics[currentLine] || "") + "\n" + (lyrics[currentLine + 1] || "");
+    }
+
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        lyrics = event.target.result.split("\n").map(line => line.trim());
+        currentLine = 0;
+        updatePreview();
+      };
+      reader.readAsText(file);
     });
 
     function insertMedia() {
@@ -165,3 +215,4 @@
   </script>
 </body>
 </html>
+
