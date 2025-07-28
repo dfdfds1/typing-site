@@ -71,10 +71,14 @@
     .media-container {
       width: 100%;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .media-container iframe,
-    .media-container img {
+    .media-container img,
+    .media-container iframe {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -107,13 +111,15 @@
 </head>
 <body>
   <div class="container">
-    <!-- 왼쪽 삽입 박스 -->
+    <!-- 왼쪽 박스 (YouTube / GIF 삽입) -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <!-- 텍스트 출력/입력 -->
+    <!-- 타이핑 출력 -->
     <div id="output" class="typing-output"></div>
+
+    <!-- 입력창 -->
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
 
