@@ -41,6 +41,16 @@
       letter-spacing: 0.03em;
       text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.6s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .typing-input {
@@ -84,9 +94,12 @@
 </head>
 <body>
   <div class="container">
+    <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
+
+    <!-- 텍스트 출력/입력 -->
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
@@ -108,11 +121,16 @@
             output.textContent += text[i];
             i++;
 
-            // 15줄 초과되면 리셋
             const lines = output.textContent.split("\n");
             if (lines.length >= 15) {
               clearInterval(interval);
-              output.textContent = "";
+
+              // 페이드 아웃 후 리셋
+              output.classList.add("fade-out");
+              setTimeout(() => {
+                output.textContent = "";
+                output.classList.remove("fade-out");
+              }, 600);
             }
           } else {
             clearInterval(interval);
@@ -147,4 +165,3 @@
   </script>
 </body>
 </html>
-
