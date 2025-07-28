@@ -2,112 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      padding: 0;
-      background: url('배경이미지파일명.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: Arial, sans-serif;
+      background: #fbd6e3;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .container {
-      max-width: 800px;
-      margin: 0 auto;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
+      background-size: contain;
+      width: 100%;
+      max-width: 1150px;
+      height: auto;
+      min-height: 700px;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      position: relative;
     }
-    .content {
-      display: flex;
-      gap: 10px;
-      justify-content: space-between;
-      flex-wrap: wrap;
+
+    .left-box, .right-box, .bottom-box {
+      position: absolute;
+      border: none;
+      background: transparent;
     }
-    .left-box, .right-box {
-      background: rgba(255, 255, 255, 0.4);
-      border: 2px solid #ffccdd;
-      border-radius: 12px;
-      padding: 10px;
-      flex: 1 1 45%;
-      min-height: 200px;
-      overflow: auto;
-    }
+
     .left-box {
+      top: 120px;
+      left: 90px;
+      width: 230px;
+      height: 250px;
       cursor: pointer;
     }
-    .input-box {
-      margin-top: 10px;
-      background: rgba(255, 255, 255, 0.4);
-      border: 2px solid #ffccdd;
-      border-radius: 12px;
+
+    .right-box {
+      top: 120px;
+      left: 350px;
+      width: 680px;
+      height: 250px;
+      overflow-y: auto;
+      color: #000;
       padding: 10px;
+      font-size: 16px;
+      white-space: pre-wrap;
     }
+
+    .bottom-box {
+      bottom: 70px;
+      left: 90px;
+      width: 950px;
+      height: 100px;
+    }
+
     input[type="text"] {
       width: 100%;
-      padding: 10px;
+      height: 100%;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      font-size: 18px;
+      padding: 10px;
+      background: transparent;
+      color: #000;
+      outline: none;
     }
-    iframe, img {
+
+    iframe, img.embed-content {
       width: 100%;
-      border-radius: 8px;
-    }
-    @media (max-width: 600px) {
-      .content {
-        flex-direction: column;
-      }
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="content">
-      <div class="left-box" onclick="insertMedia()" id="media-box">
-        <p style="text-align:center;opacity:0.6">(클릭해서 미디어 삽입)</p>
-      </div>
-      <div class="right-box" id="display-box"></div>
-    </div>
-    <div class="input-box">
-      <input type="text" id="input-text" placeholder="여기에 입력 후 Enter">
+    <div class="left-box" onclick="embedContent()"></div>
+    <div class="right-box" id="displayBox"></div>
+    <div class="bottom-box">
+      <input type="text" id="inputBox" placeholder="Type here..." />
     </div>
   </div>
 
   <script>
-    const input = document.getElementById('input-text');
-    const displayBox = document.getElementById('display-box');
+    const input = document.getElementById("inputBox");
+    const displayBox = document.getElementById("displayBox");
 
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
         const text = input.value;
-        input.value = '';
-        typeText(text);
+        input.value = "";
+        displayTextOneByOne(text);
       }
     });
 
-    function typeText(text) {
-      let index = 0;
-      const span = document.createElement('div');
-      displayBox.appendChild(span);
+    function displayTextOneByOne(text) {
+      let i = 0;
       const interval = setInterval(() => {
-        if (index < text.length) {
-          span.textContent += text[index];
-          index++;
+        if (i < text.length) {
+          displayBox.innerText += text[i];
+          i++;
         } else {
           clearInterval(interval);
+          displayBox.innerHTML += "<br/>";
         }
-      }, 50);
+      }, 80); // typing speed
     }
 
-    function insertMedia() {
-      const url = prompt("YouTube URL or GIF URL을 붙여 넣으세요:");
-      const mediaBox = document.getElementById('media-box');
-      mediaBox.innerHTML = '';
-      if (!url) return;
-      if (url.includes('youtube.com') || url.includes('youtu
+    function embedContent() {
+      const url = prompt("Enter a YouTube URL or GIF link:");
+      const leftBox = document.querySelector(".left-box");
+
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        const videoId = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
+        leftBox.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+      } else if (url.match(/\.(gif|png|jpg|jpeg)$/)) {
+        leftBox.innerHTML = `<img class="embed-content" src="${url}" alt="content"/>`;
+      } else {
+        alert("Invalid link.");
+      }
+    }
+  </script>
+</body>
+</html>
+
