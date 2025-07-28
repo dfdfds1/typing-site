@@ -13,7 +13,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: url("KakaoTalk_20250728_132331714.png") no-repeat center 58%;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center 57%;
       background-size: cover;
       background-attachment: fixed;
       font-family: 'Nanum Myeongjo', Georgia, serif;
@@ -28,7 +28,7 @@
 
     .typing-output {
       position: absolute;
-      top: 43%;
+      top: 42%;
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
@@ -59,7 +59,7 @@
 
     .left-box {
       position: absolute;
-      top: 25%;
+      top: 24%;
       left: 11%;
       width: 540px;
       height: 560px;
@@ -128,13 +128,5 @@
         }
         box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
       } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = `<img src="${url}" alt="media">`;
-      } else {
-        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
-      }
-    }
-  </script>
-</body>
-</html>
-
+        box.innerHTML = `<img src="${url}" alt="
 
