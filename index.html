@@ -1,59 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sanho Typing Practice</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Typing Practice</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: url('c9ed5e3e-1e1d-4239-b77e-7cc04c0cdb93.png') no-repeat center top;
+      background-size: cover;
+      font-family: sans-serif;
+    }
+
+    .typing-wrapper {
+      position: absolute;
+      top: 155px; /* sign up 아래부터 시작 */
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 90px;
       box-sizing: border-box;
     }
 
-    html, body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: url('c9ed5e3e-1e1d-4239-b77e-7cc04c0cdb93.png') no-repeat center top;
-      background-size: cover;
-    }
-
-    .box-container {
-      position: absolute;
-      top: 36%; /* 약간 위에서 시작 */
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      width: 80%;
-      gap: 3%;
-    }
-
-    .media-box, .preview-box {
-      flex: 1;
+    .left-box, .right-box {
+      width: 50%;
       height: 200px;
       background-color: transparent;
       color: #d86c9e;
       font-size: 16px;
       padding: 10px;
       overflow-y: auto;
-      border: none;
     }
 
-    .input-box {
+    .bottom-box {
       position: absolute;
-      bottom: 13%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
+      bottom: 80px;
+      left: 90px;
+      right: 90px;
     }
 
-    #typing-box {
+    .bottom-box textarea {
       width: 100%;
-      height: 100px;
-      background-color: transparent;
+      height: 90px;
       border: none;
+      background-color: transparent;
       font-size: 16px;
       color: #d86c9e;
       padding: 10px;
@@ -62,15 +57,17 @@
   </style>
 </head>
 <body>
-  <div class="box-container">
-    <div class="media-box" id="media">
-      <!-- You can embed a gif or YouTube video -->
+  <div class="typing-wrapper">
+    <div class="left-box" id="media">
+      <!-- YouTube나 이미지 삽입 가능 -->
       <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
     </div>
-    <div class="preview-box" id="preview"></div>
+    <div class="right-box" id="preview">
+      <!-- 타이핑 내용 실시간 표시 -->
+    </div>
   </div>
 
-  <div class="input-box">
+  <div class="bottom-box">
     <textarea id="typing-box" placeholder="여기에 타이핑..."></textarea>
   </div>
 
