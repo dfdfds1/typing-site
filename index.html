@@ -4,115 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       background-color: #fbd4e6;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
     }
 
     body {
-      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
-      background-size: cover;
-      font-family: 'Nanum Gothic Coding', monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: #fbd4e6 url("KakaoTalk_20250728_132331714.png") no-repeat center center fixed;
+      background-size: cover; /* 초기값 */
+      transition: background-size 0.3s ease;
     }
 
     .container {
-      position: relative;
-      width: 1280px;
-      height: 720px;
-    }
-
-    .media-container {
       position: absolute;
-      top: 155px;
-      left: 145px;
-      width: 260px;
-      height: 260px;
-      background-color: transparent;
-      cursor: pointer;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-
-    .media-container iframe,
-    .media-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border: none;
-      display: block;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 20px;
     }
 
     .typing-output {
       position: absolute;
-      top: 155px;
-      left: 440px;
-      width: 660px;
-      height: 260px;
-      font-size: 17px;
-      line-height: 1.7;
-      white-space: pre-wrap;
+      top: 42%;
+      left: 53%;
+      width: 38%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      color: #2d2d2d;
+      line-height: 1.6;
       word-break: break-word;
-      color: #444;
-      padding: 10px;
+      white-space: pre-wrap;
+      font-family: "Courier New", monospace;
+      mix-blend-mode: multiply;
+      text-shadow: 0.5px 0.5px #eee;
     }
 
     .typing-input {
       position: absolute;
       bottom: 125px;
-      left: 145px;
-      width: 960px;
+      left: 13%;
+      width: 75%;
       font-size: 16px;
-      padding: 10px;
+      padding: 8px;
       border: none;
       outline: none;
       background-color: transparent;
-      color: #555;
+      color: #333;
+      font-family: "Courier New", monospace;
+    }
+
+    .media-box {
+      position: absolute;
+      top: 31.5%;
+      left: 16%;
+      width: 210px;
+      height: 200px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .media-box iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
 
     @media (max-width: 768px) {
-      .container {
-        width: 95vw;
-        height: 90vh;
-      }
-      .media-container {
-        width: 40vw;
-        height: 40vw;
-        top: 20%;
-        left: 5%;
-      }
       .typing-output {
-        top: 20%;
+        width: 90%;
+        top: 44%;
         left: 50%;
-        width: 45vw;
-        height: 40vw;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
         font-size: 15px;
       }
+
       .typing-input {
-        bottom: 10%;
+        width: 90%;
         left: 5%;
-        width: 90vw;
+        bottom: 110px;
+      }
+
+      .media-box {
+        width: 180px;
+        height: 150px;
+        left: 10%;
+        top: 30%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="media-container" id="mediaBox" onclick="insertMedia()">
-      <!-- 클릭하면 YouTube 또는 GIF 삽입 -->
-    </div>
+    <div class="media-box" onclick="addMedia()"></div>
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
 
   <script>
+    // 타자 입력 애니메이션
     const input = document.getElementById("input");
     const output = document.getElementById("output");
 
@@ -129,34 +125,52 @@
             clearInterval(interval);
             output.textContent += "\n";
           }
-        }, 40);
+        }, 50);
       }
     });
 
-    function insertMedia() {
-      const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
-      const box = document.getElementById("mediaBox");
-
-      if (!url) return;
-
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let embedUrl = url;
-        if (url.includes("watch?v=")) {
-          const id = url.split("watch?v=")[1].split("&")[0];
-          embedUrl = `https://www.youtube.com/embed/${id}`;
-        } else if (url.includes("youtu.be")) {
-          const id = url.split("youtu.be/")[1];
-          embedUrl = `https://www.youtube.com/embed/${id}`;
-        }
-        box.innerHTML = `<iframe src="${embedUrl}?rel=0" frameborder="0" allowfullscreen></iframe>`;
-      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = `<img src="${url}" alt="media">`;
-      } else {
-        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+    // 유튜브 삽입
+    function addMedia() {
+      const url = prompt("YouTube 또는 GIF 링크를 입력하세요:");
+      if (url) {
+        const mediaBox = document.querySelector(".media-box");
+        mediaBox.innerHTML = `<iframe src="${convertToEmbed(url)}" allowfullscreen></iframe>`;
       }
     }
+
+    // 유튜브 watch → embed로 변환
+    function convertToEmbed(url) {
+      if (url.includes("youtube.com/watch?v=")) {
+        return url.replace("watch?v=", "embed/");
+      } else if (url.includes("youtu.be/")) {
+        return url.replace("youtu.be/", "youtube.com/embed/");
+      }
+      return url;
+    }
+
+    // 📏 배경 이미지 비율에 따라 자동 조정
+    function adjustBackgroundSize() {
+      const bgImage = new Image();
+      bgImage.src = "KakaoTalk_20250728_132331714.png";
+      bgImage.onload = () => {
+        const imgRatio = bgImage.width / bgImage.height;
+        const winRatio = window.innerWidth / window.innerHeight;
+
+        // 이미지가 잘릴 가능성이 있을 경우 contain으로
+        if (winRatio > imgRatio) {
+          document.body.style.backgroundSize = "contain";
+        } else {
+          document.body.style.backgroundSize = "cover";
+        }
+      };
+    }
+
+    // 초기 실행 + 창 크기 변경 대응
+    adjustBackgroundSize();
+    window.addEventListener("resize", adjustBackgroundSize);
   </script>
 </body>
 </html>
+
 
 
