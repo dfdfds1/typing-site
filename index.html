@@ -14,7 +14,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: url("KakaoTalk_20250728_132331714.png") no-repeat center 55%;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
       background-size: cover;
       background-attachment: fixed;
       font-family: 'Nanum Myeongjo', 'Georgia', serif;
@@ -120,4 +120,45 @@
     const input = document.getElementById("input");
     const output = document.getElementById("output");
 
-    input.addEventListener("
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const text = input.value;
+        input.value = "";
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            output.textContent += text[i];
+            i++;
+          } else {
+            clearInterval(interval);
+            output.textContent += "\n";
+          }
+        }, 50);
+      }
+    });
+
+    function insertMedia() {
+      const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
+      const box = document.getElementById("mediaBox");
+
+      if (!url) return;
+
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let embedUrl = url;
+        if (url.includes("watch?v=")) {
+          const id = url.split("watch?v=")[1].split("&")[0];
+          embedUrl = https://www.youtube.com/embed/${id};
+        } else if (url.includes("youtu.be")) {
+          const id = url.split("youtu.be/")[1];
+          embedUrl = https://www.youtube.com/embed/${id};
+        }
+        box.innerHTML = <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>;
+      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
+        box.innerHTML = <img src="${url}" alt="media">;
+      } else {
+        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+      }
+    }
+  </script>
+</body>
+</html>
