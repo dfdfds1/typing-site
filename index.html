@@ -2,98 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sanho Typing Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kawaii Typing Site</title>
   <style>
-    * {
+    body {
       margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      background-color: #ffeef5;
+      font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+      color: #222;
     }
 
-    html, body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: url('c9ed5e3e-1e1d-4239-b77e-7cc04c0cdb93.png') no-repeat center top;
-      background-size: cover;
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffeef5 url('https://i.imgur.com/zY5RcTQ.png') repeat;
+      border: 4px solid #f8bfd6;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 0 16px rgba(255, 184, 206, 0.6);
     }
 
-    .box-container {
-      position: absolute;
-      top: 36%;
-      left: 50%;
-      transform: translateX(-50%);
+    .top-bar {
       display: flex;
-      width: 80%;
-      height: 300px;
-      gap: 3%;
+      justify-content: flex-start;
+      gap: 20px;
+      font-size: 1rem;
+      margin-bottom: 12px;
     }
 
-    .media-box, .preview-box {
-      width: 50%;
-      height: 100%;
-      background-color: transparent;
-      color: #d86c9e;
-      font-size: 16px;
+    .content-box {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .left-box,
+    .right-box {
+      flex: 1;
+      min-height: 160px;
+      background-color: #ffe4ee;
+      border: 2px solid #f8bfd6;
+      border-radius: 14px;
       padding: 10px;
-      border: none;
+      box-shadow: inset 0 0 4px #ffc8dc;
+    }
+
+    .left-box {
+      max-width: 48%;
+      cursor: pointer;
+      text-align: center;
       overflow: hidden;
     }
 
-    .media-inner {
+    .left-box iframe,
+    .left-box img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
     }
 
-    .media-inner iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .right-box {
+      max-width: 48%;
+      white-space: pre-wrap;
     }
 
     .input-box {
-      position: absolute;
-      bottom: 13%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
+      background-color: #ffe4ee;
+      border: 2px solid #f8bfd6;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: inset 0 0 4px #ffc8dc;
     }
 
-    #typing-box {
+    .input-box input {
       width: 100%;
-      height: 100px;
-      background-color: transparent;
       border: none;
-      font-size: 16px;
-      color: #d86c9e;
-      padding: 10px;
-      resize: none;
+      outline: none;
+      background: transparent;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    @media (max-width: 600px) {
+      .content-box {
+        flex-direction: column;
+      }
+      .left-box,
+      .right-box {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="box-container">
-    <div class="media-box" id="media">
-      <div class="media-inner">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-      </div>
+  <div class="container">
+    <div class="top-bar">
+      <span><strong>Sign up</strong></span>
+      <span>|</span>
+      <span><strong>Login</strong></span>
     </div>
-    <div class="preview-box" id="preview"></div>
-  </div>
-
-  <div class="input-box">
-    <textarea id="typing-box" placeholder="여기에 타이핑..."></textarea>
+    <div class="content-box">
+      <div class="left-box" onclick="insertMedia()" id="mediaBox">
+        <p style="color:#888">Click to insert GIF or YouTube</p>
+      </div>
+      <div class="right-box" id="displayText"></div>
+    </div>
+    <div class="input-box">
+      <input type="text" id="typeInput" placeholder="Type here..." />
+    </div>
   </div>
 
   <script>
-    const typingBox = document.getElementById('typing-box');
-    const preview = document.getElementById('preview');
+    const input = document.getElementById('typeInput');
+    const display = document.getElementById('displayText');
 
-    typingBox.addEventListener('input', () => {
-      preview.textContent = typingBox.value;
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (text) typeOut(text);
+        input.value = '';
+      }
     });
+
+    function typeOut(text) {
+      let i = 0;
+      const speed = 50;
+      const span = document.createElement('div');
+      display.appendChild(span);
+
+      function type() {
+        if (i < text.length) {
+          span.textContent += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        }
+      }
+      type();
+    }
+
+    function insertMedia() {
+      const url = prompt("Enter a YouTube or GIF URL:");
+      const box = document.getElementById('mediaBox');
+      if (!url) return;
+      box.innerHTML = '';
+
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoID = url.split('v=')[1] || url.split('/').pop();
+        videoID = videoID.split('&')[0];
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${videoID}`;
+        iframe.frameBorder = 0;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        box.appendChild(iframe);
+      } else if (url.match(/\.(gif|jpg|png)$/)) {
+        const img = document.createElement('img');
+        img.src = url;
+        box.appendChild(img);
+      } else {
+        box.innerHTML = '<p style="color:red">Invalid URL</p>';
+      }
+    }
   </script>
 </body>
 </html>
