@@ -4,33 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center fixed;
-      background-size: contain;
+      height: 100%;
       background-color: #fbd4e6;
+    }
+
+    body {
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
+      background-size: cover;
       font-family: 'Nanum Gothic Coding', monospace;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
 
     .container {
       position: relative;
-      width: 95vw;
-      height: 95vh;
+      width: 1280px;
+      height: 720px;
     }
 
     .media-container {
       position: absolute;
-      top: 165px;
+      top: 155px;
       left: 145px;
       width: 260px;
       height: 260px;
+      background-color: transparent;
       cursor: pointer;
+      overflow: hidden;
+      border-radius: 8px;
     }
 
     .media-container iframe,
@@ -40,12 +47,11 @@
       object-fit: cover;
       border: none;
       display: block;
-      aspect-ratio: 1 / 1;
     }
 
     .typing-output {
       position: absolute;
-      top: 165px;
+      top: 155px;
       left: 440px;
       width: 660px;
       height: 260px;
@@ -54,7 +60,6 @@
       white-space: pre-wrap;
       word-break: break-word;
       color: #444;
-      font-family: 'Nanum Gothic Coding', monospace;
       padding: 10px;
     }
 
@@ -69,13 +74,12 @@
       outline: none;
       background-color: transparent;
       color: #555;
-      font-family: 'Nanum Gothic Coding', monospace;
     }
 
     @media (max-width: 768px) {
       .container {
-        width: 100vw;
-        height: 100vh;
+        width: 95vw;
+        height: 90vh;
       }
       .media-container {
         width: 40vw;
@@ -102,7 +106,7 @@
 <body>
   <div class="container">
     <div class="media-container" id="mediaBox" onclick="insertMedia()">
-      <!-- 클릭하면 미디어 삽입 -->
+      <!-- 클릭하면 YouTube 또는 GIF 삽입 -->
     </div>
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
