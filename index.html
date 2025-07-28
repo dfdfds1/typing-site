@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -40,6 +41,16 @@
       letter-spacing: 0.03em;
       text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.6s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .typing-input {
@@ -79,118 +90,60 @@
       object-fit: cover;
       border: none;
     }
-
-    #fileInput {
-      display: none;
-    }
-
-    .preview-box {
-      position: absolute;
-      top: 30%;
-      left: 58%;
-      transform: translateX(-50%);
-      width: 34%;
-      font-size: 14px;
-      color: #777;
-      white-space: pre-wrap;
-      z-index: 0;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 삽입 미디어 -->
+    <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <!-- 가사 미리보기 -->
-    <div id="preview" class="preview-box"></div>
-
-    <!-- 출력 박스 -->
+    <!-- 텍스트 출력/입력 -->
     <div id="output" class="typing-output"></div>
-
-    <!-- 입력 박스 -->
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
-
-    <!-- 숨겨진 txt 업로드 -->
-    <input type="file" id="fileInput" accept=".txt" onchange="loadLyrics(event)" />
   </div>
 
   <script>
     const input = document.getElementById("input");
     const output = document.getElementById("output");
-    const preview = document.getElementById("preview");
-    const fileInput = document.getElementById("fileInput");
 
-    let lyricsLines = [];
-    let currentLine = 0;
-    let lineCount = 0;
-
-    // 텍스트 출력 애니메이션
-    function typeLineAnimated(text) {
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < text.length) {
-          output.textContent += text[i];
-          i++;
-        } else {
-          clearInterval(interval);
-          output.textContent += "\n";
-          lineCount++;
-          if (lineCount >= 15) {
-            output.textContent = "";
-            lineCount = 0;
-          }
-        }
-      }, 30);
-    }
-
-    // 사용자가 타이핑 후 엔터
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        e.preventDefault();
-        const typed = input.value.trim();
-        const target = lyricsLines[currentLine] || typed;
+        const text = input.value.trim();
+        if (!text) return;
+
         input.value = "";
-        typeLineAnimated(target);
-        currentLine++;
-        if (currentLine < lyricsLines.length) {
-          input.value = lyricsLines[currentLine];
-        } else {
-          input.placeholder = "가사가 끝났습니다.";
-        }
-        updatePreview();
+        let i = 0;
+
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            output.textContent += text[i];
+            i++;
+
+            const lines = output.textContent.split("\n");
+            if (lines.length >= 15) {
+              clearInterval(interval);
+
+              // 페이드 아웃 후 리셋
+              output.classList.add("fade-out");
+              setTimeout(() => {
+                output.textContent = "";
+                output.classList.remove("fade-out");
+              }, 600);
+            }
+          } else {
+            clearInterval(interval);
+            output.textContent += "\n";
+          }
+        }, 50);
       }
     });
 
-    // txt 불러오기
-    function loadLyrics(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const text = e.target.result;
-        lyricsLines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-        currentLine = 0;
-        lineCount = 0;
-        output.textContent = "";
-        input.value = lyricsLines[0] || "";
-        updatePreview();
-      };
-      reader.readAsText(file);
-    }
-
-    function updatePreview() {
-      const next1 = lyricsLines[currentLine + 1] || "";
-      const next2 = lyricsLines[currentLine + 2] || "";
-      preview.textContent = next1 + "\n" + next2;
-    }
-
-    // 미디어 삽입
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
       const box = document.getElementById("mediaBox");
+
       if (!url) return;
 
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -209,10 +162,6 @@
         alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
     }
-
-    // 자동 가사 업로드 트리거 예시 (원할 경우 주석 해제)
-    // window.onload = () => document.getElementById('fileInput').click();
   </script>
 </body>
 </html>
-
