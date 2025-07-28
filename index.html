@@ -7,32 +7,29 @@
   <style>
     body {
       margin: 0;
-      background-color: #fddcea;
+      background-color: #fcdcec;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: 'Arial', sans-serif;
+      overflow: hidden;
     }
 
-    .wrapper {
+    .container {
       position: relative;
-      width: 100vw;
+      width: 100%;
       max-width: 1150px;
       aspect-ratio: 2048 / 1061;
-    }
-
-    .wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      background-image: url("926b4a01-e9b6-492b-bf3a-47809d5fb679.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
     .typing-output {
       position: absolute;
-      top: 35%;
-      left: 55%;
+      top: 37%;
+      left: 57%;
       width: 36%;
       font-size: 18px;
       color: #000;
@@ -44,38 +41,42 @@
 
     .typing-input {
       position: absolute;
-      bottom: 11.5%;
-      left: 8%;
-      width: 84%;
+      bottom: 12%;
+      left: 9%;
+      width: 82%;
       font-size: 16px;
       padding: 8px;
       border: none;
       background: transparent;
       outline: none;
-      color: #333;
+      color: #444;
     }
 
     @media (max-width: 768px) {
+      .container {
+        max-width: 100vw;
+        height: auto;
+        aspect-ratio: 2048 / 1061;
+      }
+
       .typing-output {
         font-size: 14px;
-        top: 35%;
-        left: 50%;
         width: 80%;
+        left: 50%;
+        top: 37%;
         transform: translateX(-50%);
       }
 
       .typing-input {
         width: 80%;
         left: 10%;
-        bottom: 10%;
-        font-size: 14px;
+        bottom: 11%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <img src="KakaoTalk_20250728_132331714.png" alt="background" />
+  <div class="container">
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
@@ -103,3 +104,4 @@
   </script>
 </body>
 </html>
+
