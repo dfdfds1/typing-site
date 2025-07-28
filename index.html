@@ -1,103 +1,131 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Typing Practice</title>
+  <title>Typing Site</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: url("25c507de-9ed0-4508-86ba-080e31974aac.png") no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      height: 100%;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: contain;
+      font-family: sans-serif;
     }
 
     .container {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
       position: relative;
-      width: 100%;
-      max-width: 1150px;
-      height: 700px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 20px;
     }
 
-    .typing-output {
+    .left-box {
       position: absolute;
-      top: 50%;
-      left: 55%;
-      width: 40%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      color: #000;
+      top: 90px;
+      left: 30px;
+      width: 180px;
+      height: 180px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .left-box iframe,
+    .left-box img {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+    }
+
+    .right-box {
+      position: absolute;
+      top: 90px;
+      left: 240px;
+      width: 510px;
+      height: 180px;
+      overflow-y: auto;
+      font-size: 16px;
+      padding: 10px;
+      color: #333;
       line-height: 1.6;
-      word-break: break-word;
       white-space: pre-wrap;
     }
 
-    .typing-input {
+    .input-box {
       position: absolute;
-      bottom: 110px;
-      left: 100px;
-      width: 85%;
+      bottom: 40px;
+      left: 30px;
+      width: 720px;
+      height: 60px;
+      padding: 10px;
       font-size: 16px;
-      padding: 8px;
       border: none;
+      background: transparent;
       outline: none;
-      background-color: transparent;
-      color: #555;
-    }
-
-    @media (max-width: 768px) {
-      .typing-output {
-        font-size: 16px;
-        top: 45%;
-        left: 50%;
-        width: 90%;
-        transform: translate(-50%, -50%);
-      }
-
-      .typing-input {
-        width: 90%;
-        left: 5%;
-        bottom: 100px;
-      }
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div id="output" class="typing-output"></div>
-    <input id="input" class="typing-input" type="text" placeholder="Type here..." />
+    <div class="left-box" onclick="insertMedia()"></div>
+    <div class="right-box" id="outputBox"></div>
+    <textarea
+      class="input-box"
+      id="inputBox"
+      placeholder="Type here and press Enter..."
+    ></textarea>
   </div>
 
   <script>
-    const input = document.getElementById("input");
-    const output = document.getElementById("output");
+    const inputBox = document.getElementById("inputBox");
+    const outputBox = document.getElementById("outputBox");
 
-    input.addEventListener("keydown", function (e) {
+    inputBox.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        const text = input.value;
-        input.value = "";
-        let i = 0;
-        const interval = setInterval(() => {
-          if (i < text.length) {
-            output.textContent += text[i];
-            i++;
-          } else {
-            clearInterval(interval);
-            output.textContent += "\n";
-          }
-        }, 50);
+        e.preventDefault();
+        const text = inputBox.value.trim();
+        inputBox.value = "";
+        showTypingEffect(text);
       }
     });
+
+    function showTypingEffect(text) {
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          outputBox.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+          outputBox.textContent += "\n";
+        }
+      }, 50);
+    }
+
+    function insertMedia() {
+      const url = prompt("GIF 또는 YouTube 링크를 붙여넣어 주세요:");
+      const container = document.querySelector(".left-box");
+      container.innerHTML = ""; // 초기화
+
+      if (!url) return;
+
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("watch?v=")) {
+          videoId = url.split("watch?v=")[1].split("&")[0];
+        } else if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split("?")[0];
+        }
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+      } else {
+        container.innerHTML = `<img src="${url}" alt="GIF">`;
+      }
+    }
   </script>
 </body>
-</html>
-
 </html>
