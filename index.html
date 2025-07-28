@@ -7,166 +7,137 @@
   <style>
     body {
       margin: 0;
-      background-color: #ffeef5;
-      font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
-      color: #222;
+      padding: 0;
+      font-family: "Comic Sans MS", cursive;
+      background: #ffeef5;
+      color: #333;
     }
 
     .container {
-      max-width: 600px;
-      margin: 40px auto;
-      background: #ffeef5 url('https://i.imgur.com/zY5RcTQ.png') repeat;
-      border: 4px solid #f8bfd6;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 0 16px rgba(255, 184, 206, 0.6);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: flex-start;
-      gap: 20px;
-      font-size: 1rem;
-      margin-bottom: 12px;
+    .header {
+      text-align: right;
+      padding: 10px;
+      font-size: 14px;
     }
 
-    .content-box {
+    .box {
       display: flex;
       flex-direction: row;
-      gap: 10px;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
 
-    .left-box,
-    .right-box {
+    .left, .right {
       flex: 1;
-      min-height: 160px;
-      background-color: #ffe4ee;
-      border: 2px solid #f8bfd6;
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: inset 0 0 4px #ffc8dc;
+      height: 250px;
+      border-radius: 12px;
+      background: #ffe4ec;
+      border: 2px solid #f8a5c2;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .left-box {
-      max-width: 48%;
+    .left {
       cursor: pointer;
-      text-align: center;
       overflow: hidden;
     }
 
-    .left-box iframe,
-    .left-box img {
+    .left iframe, .left img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
-    .right-box {
-      max-width: 48%;
+    .output-box {
+      background: #ffe4ec;
+      border: 2px solid #f8a5c2;
+      border-radius: 12px;
+      padding: 1rem;
+      height: 150px;
+      overflow-y: auto;
       white-space: pre-wrap;
     }
 
     .input-box {
-      background-color: #ffe4ee;
-      border: 2px solid #f8bfd6;
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: inset 0 0 4px #ffc8dc;
-    }
-
-    .input-box input {
       width: 100%;
-      border: none;
+      font-size: 16px;
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: 2px solid #f8a5c2;
+      background: #fff0f6;
+      box-sizing: border-box;
       outline: none;
-      background: transparent;
-      font-size: 1rem;
-      font-family: inherit;
     }
 
     @media (max-width: 600px) {
-      .content-box {
+      .box {
         flex-direction: column;
-      }
-      .left-box,
-      .right-box {
-        max-width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="top-bar">
-      <span><strong>Sign up</strong></span>
-      <span>|</span>
-      <span><strong>Login</strong></span>
+    <div class="header">
+      <a href="#">Sign Up</a> | <a href="#">Login</a>
     </div>
-    <div class="content-box">
-      <div class="left-box" onclick="insertMedia()" id="mediaBox">
-        <p style="color:#888">Click to insert GIF or YouTube</p>
+
+    <div class="box">
+      <div class="left" onclick="addMedia()" id="mediaBox">
+        <p style="text-align:center; opacity: 0.6;">Click to embed GIF or YouTube</p>
       </div>
-      <div class="right-box" id="displayText"></div>
+      <div class="right">
+        <div id="output" class="output-box"></div>
+      </div>
     </div>
-    <div class="input-box">
-      <input type="text" id="typeInput" placeholder="Type here..." />
-    </div>
+
+    <input
+      type="text"
+      class="input-box"
+      id="inputField"
+      placeholder="Type something and press Enter..."
+    />
   </div>
 
   <script>
-    const input = document.getElementById('typeInput');
-    const display = document.getElementById('displayText');
+    const input = document.getElementById("inputField");
+    const output = document.getElementById("output");
 
-    input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
         e.preventDefault();
-        const text = input.value.trim();
-        if (text) typeOut(text);
-        input.value = '';
+        const text = input.value;
+        input.value = "";
+        typeText(text);
       }
     });
 
-    function typeOut(text) {
+    function typeText(text) {
       let i = 0;
-      const speed = 50;
-      const span = document.createElement('div');
-      display.appendChild(span);
-
-      function type() {
+      const interval = setInterval(() => {
         if (i < text.length) {
-          span.textContent += text.charAt(i);
+          output.textContent += text[i];
           i++;
-          setTimeout(type, speed);
+        } else {
+          clearInterval(interval);
+          output.textContent += "\n";
         }
-      }
-      type();
+      }, 50);
     }
 
-    function insertMedia() {
-      const url = prompt("Enter a YouTube or GIF URL:");
-      const box = document.getElementById('mediaBox');
-      if (!url) return;
-      box.innerHTML = '';
-
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let videoID = url.split('v=')[1] || url.split('/').pop();
-        videoID = videoID.split('&')[0];
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${videoID}`;
-        iframe.frameBorder = 0;
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        iframe.allowFullscreen = true;
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        box.appendChild(iframe);
-      } else if (url.match(/\.(gif|jpg|png)$/)) {
-        const img = document.createElement('img');
-        img.src = url;
-        box.appendChild(img);
-      } else {
-        box.innerHTML = '<p style="color:red">Invalid URL</p>';
+    function addMedia() {
+      const url = prompt("Paste GIF or YouTube embed link:");
+      const mediaBox = document.getElementById("mediaBox");
+      if (url) {
+        mediaBox.innerHTML = url.includes("youtube")
+          ? `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`
+          : `<img src="${url}" />`;
       }
     }
   </script>
