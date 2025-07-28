@@ -5,28 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
-      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center 55%;
       background-size: cover;
       background-attachment: fixed;
-      font-family: 'Nanum Myeongjo', 'Georgia', serif;
+      font-family: 'Nanum Myeongjo', Georgia, serif;
       overflow: hidden;
     }
-
     .container {
       position: relative;
       width: 100vw;
       height: 100vh;
     }
-
     .typing-output {
       position: absolute;
       top: 44%;
@@ -42,7 +36,6 @@
       text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
     }
-
     .typing-input {
       position: absolute;
       bottom: 16%;
@@ -57,7 +50,6 @@
       letter-spacing: 0.02em;
       z-index: 1;
     }
-
     .left-box {
       position: absolute;
       top: 24%;
@@ -67,12 +59,10 @@
       cursor: pointer;
       z-index: 2;
     }
-
     .media-container {
       width: 100%;
       height: 100%;
     }
-
     .media-container img,
     .media-container iframe {
       width: 100%;
@@ -80,38 +70,13 @@
       object-fit: cover;
       border: none;
     }
-
-    @media (max-width: 768px) {
-      .typing-output {
-        top: 44%;
-        left: 50%;
-        width: 90%;
-        font-size: 16px;
-      }
-
-      .typing-input {
-        bottom: 10%;
-        left: 5%;
-        width: 90%;
-      }
-
-      .left-box {
-        top: 22%;
-        left: 5%;
-        width: 200px;
-        height: 170px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
-
-    <!-- 텍스트 출력/입력 -->
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
@@ -137,7 +102,7 @@
       }
     });
 
-    function insertMedia() {
+    window.insertMedia = function () {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
       const box = document.getElementById("mediaBox");
 
@@ -147,18 +112,18 @@
         let embedUrl = url;
         if (url.includes("watch?v=")) {
           const id = url.split("watch?v=")[1].split("&")[0];
-          embedUrl = https://www.youtube.com/embed/${id};
+          embedUrl = `https://www.youtube.com/embed/${id}`;
         } else if (url.includes("youtu.be")) {
           const id = url.split("youtu.be/")[1];
-          embedUrl = https://www.youtube.com/embed/${id};
+          embedUrl = `https://www.youtube.com/embed/${id}`;
         }
-        box.innerHTML = <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>;
+        box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
       } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = <img src="${url}" alt="media">;
+        box.innerHTML = `<img src="${url}" alt="media">`;
       } else {
         alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
-    }
+    };
   </script>
 </body>
 </html>
