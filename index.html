@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: url('background.png') no-repeat center center fixed;
+      background: url('KakaoTalk_20250728_132331714.png') no-repeat center center fixed;
       background-size: contain;
       font-family: sans-serif;
     }
@@ -115,6 +115,20 @@
       if (!url) return;
 
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let vid
+        let videoId = "";
+        if (url.includes("watch?v=")) {
+          videoId = url.split("watch?v=")[1].split("&")[0];
+        } else if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split("?")[0];
+        }
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+      } else {
+        container.innerHTML = `<img src="${url}" alt="GIF">`;
+      }
+    }
+  </script>
+</body>
+</html>
+
 
 
