@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanho's Typing Site</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Arial", sans-serif;
+      background-color: #ffeef3;
+      color: #d86c9e;
+    }
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background-color: #fff0f5;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 10px rgba(255, 192, 203, 0.4);
+      border: 2px solid #f8b7cd;
+    }
+    .header {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .top-boxes {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .box {
+      flex: 1;
+      min-height: 200px;
+      border: 1px solid #f5a8c8;
+      border-radius: 12px;
+      background-color: #ffeaf2;
+      padding: 15px;
+      overflow: auto;
+    }
+    #preview {
+      white-space: pre-wrap;
+    }
+    #typing-box {
+      width: 100%;
+      height: 100px;
+      border-radius: 12px;
+      border: 1px solid #f5a8c8;
+      padding: 10px;
+      font-size: 1em;
+      resize: none;
+      background-color: #fff7fa;
+      color: #d86c9e;
+    }
+    iframe, img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Sanho's site</div>
+    <div class="top-boxes">
+      <div class="box" id="media">
+        <!-- You can embed a gif or video here -->
+        <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="box" id="preview"></div>
+    </div>
+    <textarea id="typing-box" placeholder="Type here..."></textarea>
+  </div>
+
+  <script>
+    const typingBox = document.getElementById('typing-box');
+    const preview = document.getElementById('preview');
+
+    typingBox.addEventListener('input', () => {
+      preview.textContent = typingBox.value;
+    });
+  </script>
+</body>
+</html>
