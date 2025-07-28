@@ -7,15 +7,12 @@
   <style>
     body {
       margin: 0;
-      background: url("cc583f73-d682-4551-acda-e65f4540ed9a.png") no-repeat center center fixed;
-      background-size: contain;
-      background-color: #fddcea;
+      background: #fddcea;
       font-family: 'Arial', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
 
     .container {
@@ -23,13 +20,16 @@
       width: 90%;
       max-width: 1024px;
       aspect-ratio: 2048 / 1061;
+      background: url("cc583f73-d682-4551-acda-e65f4540ed9a.png") no-repeat center center;
+      background-size: contain;
+      background-color: #fddcea;
     }
 
     .typing-output {
       position: absolute;
       top: 36%;
       left: 48%;
-      width: 45%;
+      width: 44%;
       font-size: 18px;
       transform: translate(-50%, -50%);
       color: #000;
@@ -49,7 +49,6 @@
       background: transparent;
       outline: none;
       color: #333;
-      text-align: left;
     }
 
     @media (max-width: 768px) {
