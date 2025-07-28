@@ -8,114 +8,134 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      background-color: #fbd4e6;
-      font-family: 'Arial', sans-serif;
       overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      height: 100%;
+      width: 100%;
+      background-color: #fbd8e7;
     }
 
     body {
-      background: #fbd4e6 url("KakaoTalk_20250728_132331714.png") no-repeat center center fixed;
-      background-size: cover; /* 초기값 */
-      transition: background-size 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .container {
+    .background {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
+      background-size: contain; /* 이미지 위아래 짤리지 않게 */
+    }
+
+    .overlay {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 20px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-box {
+      position: absolute;
+      top: 200px;
+      left: 160px;
+      width: 300px;
+      height: 250px;
+      box-sizing: border-box;
+    }
+
+    .video-box iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
     }
 
     .typing-output {
       position: absolute;
-      top: 42%;
-      left: 53%;
-      width: 38%;
-      transform: translate(-50%, -50%);
+      top: 200px;
+      left: 510px;
+      width: 730px;
+      height: 250px;
+      overflow-y: auto;
       font-size: 18px;
-      color: #2d2d2d;
       line-height: 1.6;
-      word-break: break-word;
+      color: #333;
+      font-family: 'Nanum Myeongjo', serif;
       white-space: pre-wrap;
-      font-family: "Courier New", monospace;
-      mix-blend-mode: multiply;
-      text-shadow: 0.5px 0.5px #eee;
+      word-break: break-word;
+      text-shadow: 0.3px 0.3px 0.5px #999;
     }
 
     .typing-input {
       position: absolute;
-      bottom: 125px;
-      left: 13%;
-      width: 75%;
+      bottom: 170px;
+      left: 160px;
+      width: 1070px;
       font-size: 16px;
       padding: 8px;
       border: none;
       outline: none;
       background-color: transparent;
-      color: #333;
-      font-family: "Courier New", monospace;
-    }
-
-    .media-box {
-      position: absolute;
-      top: 31.5%;
-      left: 16%;
-      width: 210px;
-      height: 200px;
-      cursor: pointer;
-      overflow: hidden;
-    }
-
-    .media-box iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+      color: #444;
     }
 
     @media (max-width: 768px) {
+      .video-box {
+        top: 20%;
+        left: 10%;
+        width: 40%;
+        height: 25%;
+      }
+
       .typing-output {
-        width: 90%;
-        top: 44%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 15px;
+        top: 20%;
+        left: 55%;
+        width: 40%;
+        font-size: 14px;
       }
 
       .typing-input {
-        width: 90%;
+        bottom: 10%;
         left: 5%;
-        bottom: 110px;
-      }
-
-      .media-box {
-        width: 180px;
-        height: 150px;
-        left: 10%;
-        top: 30%;
+        width: 90%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="media-box" onclick="addMedia()"></div>
-    <div id="output" class="typing-output"></div>
-    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+  <div class="background">
+    <div class="overlay">
+      <div class="video-box" id="video-box">
+        <!-- 초기 유튜브 -->
+        <iframe src="https://www.youtube.com/embed/2EJZKTDFU3E" allowfullscreen></iframe>
+      </div>
+      <div id="output" class="typing-output"></div>
+      <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+    </div>
   </div>
 
   <script>
-    // 타자 입력 애니메이션
     const input = document.getElementById("input");
     const output = document.getElementById("output");
+    const videoBox = document.getElementById("video-box");
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        const text = input.value;
+        const text = input.value.trim();
         input.value = "";
+
+        // 유튜브 링크인 경우
+        if (text.includes("youtube.com") || text.includes("youtu.be")) {
+          const videoId = text.split("v=")[1]?.split("&")[0] || text.split("/").pop();
+          const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+          videoBox.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+          return;
+        }
+
+        // 일반 텍스트 입력
         let i = 0;
         const interval = setInterval(() => {
           if (i < text.length) {
@@ -129,45 +149,15 @@
       }
     });
 
-    // 유튜브 삽입
-    function addMedia() {
-      const url = prompt("YouTube 또는 GIF 링크를 입력하세요:");
-      if (url) {
-        const mediaBox = document.querySelector(".media-box");
-        mediaBox.innerHTML = `<iframe src="${convertToEmbed(url)}" allowfullscreen></iframe>`;
+    // 클릭 시 링크 붙여넣기 안내
+    videoBox.addEventListener("click", () => {
+      const yt = prompt("YouTube 링크를 입력하세요:");
+      if (yt) {
+        input.value = yt;
+        const event = new KeyboardEvent("keydown", { key: "Enter" });
+        input.dispatchEvent(event);
       }
-    }
-
-    // 유튜브 watch → embed로 변환
-    function convertToEmbed(url) {
-      if (url.includes("youtube.com/watch?v=")) {
-        return url.replace("watch?v=", "embed/");
-      } else if (url.includes("youtu.be/")) {
-        return url.replace("youtu.be/", "youtube.com/embed/");
-      }
-      return url;
-    }
-
-    // 📏 배경 이미지 비율에 따라 자동 조정
-    function adjustBackgroundSize() {
-      const bgImage = new Image();
-      bgImage.src = "KakaoTalk_20250728_132331714.png";
-      bgImage.onload = () => {
-        const imgRatio = bgImage.width / bgImage.height;
-        const winRatio = window.innerWidth / window.innerHeight;
-
-        // 이미지가 잘릴 가능성이 있을 경우 contain으로
-        if (winRatio > imgRatio) {
-          document.body.style.backgroundSize = "contain";
-        } else {
-          document.body.style.backgroundSize = "cover";
-        }
-      };
-    }
-
-    // 초기 실행 + 창 크기 변경 대응
-    adjustBackgroundSize();
-    window.addEventListener("resize", adjustBackgroundSize);
+    });
   </script>
 </body>
 </html>
