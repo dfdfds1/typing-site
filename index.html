@@ -1,46 +1,164 @@
-<!-- HTML 중간 생략 -->
-<script>
-  const input = document.getElementById("input");
-  const output = document.getElementById("output");
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Typing Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
 
-  input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      const text = input.value;
-      input.value = "";
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < text.length) {
-          output.textContent += text[i];
-          i++;
-        } else {
-          clearInterval(interval);
-          output.textContent += "\n";
-        }
-      }, 50);
+  <style>
+    * {
+      box-sizing: border-box;
     }
-  });
 
-  // 전역으로 등록
-  window.insertMedia = function () {
-    const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
-    const box = document.getElementById("mediaBox");
+    body {
+      margin: 0;
+      padding: 0;
+      background: url("KakaoTalk_20250728_132331714.png") no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      font-family: 'Nanum Myeongjo', 'Georgia', serif;
+      overflow: hidden;
+    }
 
-    if (!url) return;
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
 
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      let embedUrl = url;
-      if (url.includes("watch?v=")) {
-        const id = url.split("watch?v=")[1].split("&")[0];
-        embedUrl = `https://www.youtube.com/embed/${id}`;
-      } else if (url.includes("youtu.be")) {
-        const id = url.split("youtu.be/")[1];
-        embedUrl = `https://www.youtube.com/embed/${id}`;
+    .typing-output {
+      position: absolute;
+      top: 44%;
+      left: 58%;
+      width: 34%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      color: #333;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      letter-spacing: 0.03em;
+      text-shadow: 0.3px 0.3px 0 #ccc;
+      z-index: 1;
+    }
+
+    .typing-input {
+      position: absolute;
+      bottom: 16%;
+      left: 10%;
+      width: 80%;
+      font-size: 16px;
+      padding: 6px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #555;
+      letter-spacing: 0.02em;
+      z-index: 1;
+    }
+
+    .left-box {
+      position: absolute;
+      top: 24%;
+      left: 11%;
+      width: 540px;
+      height: 560px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .media-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-container img,
+    .media-container iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .typing-output {
+        top: 44%;
+        left: 50%;
+        width: 90%;
+        font-size: 16px;
       }
-      box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-    } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-      box.innerHTML = `<img src="${url}" alt="media">`;
-    } else {
-      alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+
+      .typing-input {
+        bottom: 10%;
+        left: 5%;
+        width: 90%;
+      }
+
+      .left-box {
+        top: 22%;
+        left: 5%;
+        width: 200px;
+        height: 170px;
+      }
     }
-  };
-</script>
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 왼쪽 삽입 박스 -->
+    <div class="left-box" onclick="insertMedia()">
+      <div class="media-container" id="mediaBox"></div>
+    </div>
+
+    <!-- 텍스트 출력/입력 -->
+    <div id="output" class="typing-output"></div>
+    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+  </div>
+
+  <script>
+    const input = document.getElementById("input");
+    const output = document.getElementById("output");
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const text = input.value;
+        input.value = "";
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            output.textContent += text[i];
+            i++;
+          } else {
+            clearInterval(interval);
+            output.textContent += "\n";
+          }
+        }, 50);
+      }
+    });
+
+    function insertMedia() {
+      const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
+      const box = document.getElementById("mediaBox");
+
+      if (!url) return;
+
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let embedUrl = url;
+        if (url.includes("watch?v=")) {
+          const id = url.split("watch?v=")[1].split("&")[0];
+          embedUrl = https://www.youtube.com/embed/${id};
+        } else if (url.includes("youtu.be")) {
+          const id = url.split("youtu.be/")[1];
+          embedUrl = https://www.youtube.com/embed/${id};
+        }
+        box.innerHTML = <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>;
+      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
+        box.innerHTML = <img src="${url}" alt="media">;
+      } else {
+        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+      }
+    }
+  </script>
+</body>
+</html>
