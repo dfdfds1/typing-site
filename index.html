@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -28,7 +29,7 @@
 
     .typing-output {
       position: absolute;
-      top: 42%;
+      top: 42%; /* ↓ 여기서 아래로 조금 내리고 싶으면 이 숫자 늘리면 됨 */
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
@@ -44,7 +45,7 @@
 
     .typing-input {
       position: absolute;
-      bottom: 15%;
+      bottom: 16%;
       left: 10%;
       width: 80%;
       font-size: 16px;
@@ -128,5 +129,12 @@
         }
         box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
       } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = `<img src="${url}" alt="
+        box.innerHTML = `<img src="${url}" alt="media">`;
+      } else {
+        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+      }
+    }
+  </script>
+</body>
+</html>
 
