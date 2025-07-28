@@ -7,31 +7,32 @@
   <style>
     body {
       margin: 0;
-      background: #fddcea;
-      font-family: 'Arial', sans-serif;
+      background-color: #fddcea;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      font-family: 'Arial', sans-serif;
     }
 
-    .container {
+    .image-container {
       position: relative;
-      width: 90%;
-      max-width: 1024px;
+      width: 95vw;
+      max-width: 1150px;
       aspect-ratio: 2048 / 1061;
-      background: url("cc583f73-d682-4551-acda-e65f4540ed9a.png") no-repeat center center;
+      background-image: url("aba6559e-c89d-4cfc-a454-062d75962254.png");
       background-size: contain;
-      background-color: #fddcea;
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
     .typing-output {
       position: absolute;
       top: 36%;
-      left: 48%;
-      width: 44%;
-      font-size: 18px;
+      left: 52%;
+      width: 38%;
       transform: translate(-50%, -50%);
+      font-size: 18px;
       color: #000;
       line-height: 1.6;
       white-space: pre-wrap;
@@ -54,9 +55,9 @@
     @media (max-width: 768px) {
       .typing-output {
         font-size: 14px;
-        top: 34%;
-        width: 80%;
+        top: 36%;
         left: 50%;
+        width: 80%;
         transform: translateX(-50%);
       }
 
@@ -70,7 +71,7 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="image-container">
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
