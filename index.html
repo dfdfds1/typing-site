@@ -7,9 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -44,15 +42,6 @@
       transition: opacity 0.5s ease;
     }
 
-    .fade-out {
-      animation: fadeOut 0.6s ease forwards;
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
     .typing-input {
       position: absolute;
       bottom: 16%;
@@ -83,60 +72,123 @@
       height: 100%;
     }
 
-    .media-container img,
-    .media-container iframe {
+    .media-container img, .media-container iframe {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border: none;
     }
+
+    .mode-btn {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      background: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      z-index: 3;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 왼쪽 삽입 박스 -->
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <!-- 텍스트 출력/입력 -->
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
+    <button class="mode-btn" onclick="switchMode()">연습 모드</button>
   </div>
 
   <script>
     const input = document.getElementById("input");
     const output = document.getElementById("output");
+    const modeBtn = document.querySelector(".mode-btn");
+
+    let practiceMode = false;
+    let lines = [];
+    let currentLine = "";
+    let lineIndex = 0;
+
+    const dummyLines = [
+      "밤하늘을 수놓은 별처럼 너와 함께한 기억들이 내 마음속에서 빛나고 있어.",
+      "네가 내게 속삭이던 작은 말들이 아직도 귓가에 맴도는 것만 같아.",
+      "서로의 손을 꼭 잡고 걸었던 그 길을 난 오늘도 되뇌이며 걷고 있어.",
+      "이젠 사라져버린 미소지만 내 눈엔 여전히 따뜻하게 남아 있어.",
+      "그날 너와 함께 본 석양은 마치 시간을 멈춘 듯 아름다웠어.",
+      "멀어진 거리를 헤매이며 나는 여전히 너를 찾고 있어.",
+      "우리의 추억은 계절을 타고 흩어졌지만 마음속에선 사라지지 않아.",
+      "슬픔 속에서도 널 떠올릴 수 있다는 게 나에겐 큰 위로였어.",
+      "밤이 깊어질수록 네 생각이 더 선명해져서 쉽게 잠들 수 없어.",
+      "마음 한구석에 자리한 너는 어떤 날엔 눈물로, 어떤 날엔 미소로 떠올라.",
+      "그토록 원했던 평범한 하루가 너 없이는 너무도 특별해.",
+      "수많은 사람 속에서도 나는 너만을 기억하고 있어.",
+      "멈춰버린 시계처럼 우리의 시간도 그날 이후로 흘러가지 않아.",
+      "다시 만난다면 가장 먼저 미안하다고 말하고 싶어.",
+      "이 사랑이 끝이 아니기를, 다시 시작이기를 간절히 바라고 있어."
+    ];
+
+    function switchMode() {
+      practiceMode = !practiceMode;
+      output.textContent = "";
+      input.value = "";
+
+      if (practiceMode) {
+        lines = [...dummyLines];
+        shuffle(lines);
+        lines = lines.slice(0, 15);
+        output.textContent = lines.join("\n");
+        lineIndex = 0;
+        currentLine = lines[lineIndex];
+        input.placeholder = currentLine;
+        modeBtn.textContent = "자유 모드";
+      } else {
+        modeBtn.textContent = "연습 모드";
+        input.placeholder = "Type here and press Enter...";
+      }
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         const text = input.value.trim();
         if (!text) return;
-
         input.value = "";
-        let i = 0;
 
-        const interval = setInterval(() => {
-          if (i < text.length) {
-            output.textContent += text[i];
-            i++;
-
-            const lines = output.textContent.split("\n");
-            if (lines.length >= 15) {
-              clearInterval(interval);
-
-              // 페이드 아웃 후 리셋
-              output.classList.add("fade-out");
-              setTimeout(() => {
-                output.textContent = "";
-                output.classList.remove("fade-out");
-              }, 600);
-            }
+        if (practiceMode) {
+          const corrected = currentLine;
+          output.textContent += `\n${corrected}`;
+          lineIndex++;
+          if (lineIndex < lines.length) {
+            currentLine = lines[lineIndex];
+            input.placeholder = currentLine;
           } else {
-            clearInterval(interval);
-            output.textContent += "\n";
+            input.placeholder = "완료되었습니다!";
           }
-        }, 50);
+        } else {
+          let i = 0;
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              output.textContent += text[i];
+              i++;
+            } else {
+              clearInterval(interval);
+              output.textContent += "\n";
+              if (output.textContent.split("\n").length > 15) {
+                output.textContent = "";
+              }
+            }
+          }, 50);
+        }
       }
     });
 
@@ -165,3 +217,4 @@
   </script>
 </body>
 </html>
+
