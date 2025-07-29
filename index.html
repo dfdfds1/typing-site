@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
+      padding: 0;
       background: url("KakaoTalk_20250728_132331714.png") no-repeat center 44%;
       background-size: cover;
       background-attachment: fixed;
@@ -22,6 +24,47 @@
       position: relative;
       width: 100vw;
       height: 100vh;
+    }
+
+    .typing-output {
+      position: absolute;
+      top: 43%;
+      left: 58%;
+      width: 34%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      z-index: 1;
+    }
+
+    .original-text {
+      color: #aaa;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .typed-text {
+      color: #000;
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .typing-input {
+      position: absolute;
+      bottom: 16%;
+      left: 10%;
+      width: 80%;
+      font-size: 16px;
+      padding: 6px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: transparent;
+      text-shadow: 0 0 0 #555;
+      z-index: 3;
     }
 
     .left-box {
@@ -46,56 +89,6 @@
       object-fit: cover;
       border: none;
     }
-
-    .typing-output, .typing-overlay {
-      position: absolute;
-      top: 43%;
-      left: 58%;
-      width: 34%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
-      letter-spacing: 0.03em;
-      z-index: 1;
-    }
-
-    .typing-output {
-      color: #bbb; /* 흐릿한 회색 */
-    }
-
-    .typing-overlay {
-      color: #000; /* 타이핑 덧씌움 - 검정 */
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .typing-input {
-      position: absolute;
-      bottom: 16%;
-      left: 10%;
-      width: 80%;
-      font-size: 16px;
-      padding: 6px;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #555;
-      z-index: 3;
-    }
-
-    #generateBtn {
-      position: absolute;
-      top: 5%;
-      right: 5%;
-      z-index: 4;
-      padding: 10px 20px;
-      font-family: inherit;
-      background: #fff;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -104,87 +97,62 @@
       <div class="media-container" id="mediaBox"></div>
     </div>
 
-    <div id="output" class="typing-output"></div>
-    <div id="overlay" class="typing-overlay"></div>
-    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
-    <button id="generateBtn">랜덤 문장 불러오기</button>
+    <!-- 출력용 텍스트 -->
+    <div class="typing-output">
+      <div id="originalText" class="original-text"></div>
+      <div id="typedText" class="typed-text"></div>
+    </div>
+
+    <input id="input" class="typing-input" type="text" placeholder="Type here..." autocomplete="off" />
   </div>
 
   <script>
     const input = document.getElementById("input");
-    const output = document.getElementById("output");
-    const overlay = document.getElementById("overlay");
-    const generateBtn = document.getElementById("generateBtn");
+    const originalText = document.getElementById("originalText");
+    const typedText = document.getElementById("typedText");
 
-    let lines = [];
-    let currentIndex = 0;
-
-    const sampleLines = [
-      "그대와 나눈 수많은 이야기들이 떠오르고",
-      "조용한 밤이면 그리움만 커져가요",
-      "잊었다고 믿었던 이름을 부르면",
-      "가슴 속 어딘가 울컥거리는 그대 모습",
-      "사라진 계절의 향기가 다시 찾아와",
-      "이 밤이 지나면 또 그대를 그리겠죠",
-      "조금만 더 곁에 있어줄 수 없나요",
-      "텅 빈 마음을 채워줄 단 하나의 온기",
-      "눈을 감으면 들리는 너의 목소리",
-      "내게 다가와 다시 한번 안아줘요",
-      "그대를 잊지 못해 부르는 이 노래",
-      "끝없는 기다림 속에서 피어난 사랑",
-      "함께 걸었던 그 길 다시 걷고 싶어",
-      "시간을 되돌려 그때로 돌아간다면",
-      "영원히 너를 놓지 않을 거야"
+    let sentences = [
+      "나는 오늘도 이 길을 걸어가고 있어.",
+      "별이 빛나는 밤에 우리는 마주쳤지.",
+      "그대의 미소는 내 하루를 밝혀주는 빛.",
+      "아무도 모르게 내 마음은 그대를 향하고 있었어.",
+      "우리의 이야기는 지금 시작되고 있어."
     ];
 
-    generateBtn.addEventListener("click", () => {
-      lines = [...sampleLines];
-      currentIndex = 0;
-      renderOutput();
-      overlay.textContent = "";
-      input.value = "";
-      input.focus();
-    });
+    let currentSentence = "";
+    let currentIndex = 0;
 
-    function renderOutput() {
-      output.textContent = lines.join("\n");
+    function loadNextSentence() {
+      currentSentence = sentences[Math.floor(Math.random() * sentences.length)];
+      originalText.textContent = currentSentence;
+      typedText.textContent = "";
+      input.value = "";
+      currentIndex = 0;
     }
 
-    input.addEventListener("input", () => {
-      if (currentIndex >= lines.length) return;
-      const typed = input.value;
-      const targetLine = lines[currentIndex];
+    loadNextSentence();
 
+    input.addEventListener("input", () => {
+      let typed = input.value;
       let corrected = "";
       for (let i = 0; i < typed.length; i++) {
-        corrected += targetLine[i] || "";
+        if (i < currentSentence.length) {
+          corrected += currentSentence[i];
+        }
       }
-
-      const before = lines.slice(0, currentIndex).join("\n");
-      const after = lines.slice(currentIndex + 1).join("\n");
-
-      overlay.textContent = `${before}${before ? "\n" : ""}${corrected}${after ? "\n" + after : ""}`;
+      typedText.textContent = corrected;
     });
 
-    input.addEventListener("keydown", function (e) {
+    input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        currentIndex++;
-        if (currentIndex >= lines.length) {
-          setTimeout(() => {
-            output.textContent = "";
-            overlay.textContent = "";
-            currentIndex = 0;
-            input.value = "";
-          }, 500);
-        } else {
-          input.value = "";
-        }
+        loadNextSentence();
       }
     });
 
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
       const box = document.getElementById("mediaBox");
+
       if (!url) return;
 
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -200,10 +168,11 @@
       } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
         box.innerHTML = `<img src="${url}" alt="media">`;
       } else {
-        alert("지원되지 않는 형식입니다.");
+        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
     }
   </script>
 </body>
 </html>
+
 
