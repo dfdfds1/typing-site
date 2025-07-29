@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
 
@@ -26,7 +27,7 @@
 
     .typing-output {
       position: absolute;
-      top: 45%;  /* 기존보다 더 아래 */
+      top: 45%;
       left: 58%;
       width: 34%;
       transform: translate(-50%, -50%);
@@ -89,15 +90,20 @@
 
     .mode-btn {
       position: absolute;
-      top: 3%;
-      left: 3%;
-      padding: 8px 14px;
-      background: rgba(255, 255, 255, 0.6);
+      top: 7.8%;
+      left: 14.5%;
+      font-size: 18px;
+      padding: 6px 14px;
+      background: transparent;
       border: none;
-      font-family: 'Nanum Myeongjo', serif;
+      color: #111;
       cursor: pointer;
-      z-index: 5;
-      border-radius: 6px;
+      font-family: 'Nanum Myeongjo', serif;
+      z-index: 10;
+    }
+
+    .mode-btn:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -121,23 +127,20 @@
 
     const sentencePool = [
       "햇살 가득한 오후, 그녀는 좋아하는 노래를 들으며 공원 벤치에 앉아 있었다.",
+      "시즌을 이해하려는 노력은 사람의 또 다른 이름이다.",
+      "그 날의 웃음소리는 아직도 귓가에 선명하다.",
       "작은 새들이 나뭇가지 사이를 날아다니고, 바람은 나뭇잎을 부드럽게 흔들었다.",
       "그 순간만큼은 세상에 혼자 있는 것처럼 고요하고 평화로웠다.",
+      "우리는 늘 그렇게 서로를 모른 채 지나치기 일쑤였다.",
+      "구속은 늘 그렇게 서서히 단단히 스며들어 온다.",
       "그는 다정한 눈빛으로 나를 바라보며 조용히 말했다.",
-      "추억은 늘 그렇게 사소한 순간에 스며들어 온다.",
-      "너의 따뜻한 말 한마디가 하루를 환하게 비춘다.",
-      "우리는 그렇게 조용히 서로의 마음에 머물렀다.",
-      "계절이 바뀌는 소리는 마음의 변화를 닮아 있다.",
-      "서로를 이해하려는 노력은 사랑의 또 다른 이름이다.",
-      "차가운 바람 사이로 스며드는 너의 온기가 그리워진다.",
-      "그 날의 웃음소리는 아직도 귓가에 선명하다.",
-      "말없이 내민 손은 그 어떤 말보다도 깊은 위로가 되었다.",
-      "비 내리는 거리를 함께 걷던 그 장면이 자꾸 떠오른다.",
-      "끝이 없는 것 같던 밤도 결국 아침을 맞이하게 된다.",
       "사랑은 결국 마음을 담아 전하는 작은 행동에서 시작된다.",
-      "창밖을 보며 떠오르는 그 날의 기억은 늘 따뜻하다.",
+      "세상이 어깨를 스치는 정도로 바쁘게 흘러갈 때가 있다.",
       "낯선 거리에서도 익숙한 마음을 발견할 수 있다.",
-      "내 마음속의 너는 언제나 조용히 미소 짓고 있다."
+      "비 내리는 거리를 함께 걷던 그 장면이 자꾸 떠오른다.",
+      "내 버리는 기억을 덮고 긴 잠에 자주 머문다.",
+      "창밖을 바라보며 흐르는 그 날의 기억은 늘 따뜻하다.",
+      "우리는 그렇게 조용히 서로의 마음에 머물렀다."
     ];
 
     function shuffleAndPick(array, count) {
@@ -252,4 +255,3 @@
   </script>
 </body>
 </html>
-
