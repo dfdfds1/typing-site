@@ -6,13 +6,8 @@
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      padding: 0;
       background: url("KakaoTalk_20250728_132331714.png") no-repeat center 44%;
       background-size: cover;
       background-attachment: fixed;
@@ -33,23 +28,18 @@
       width: 34%;
       transform: translate(-50%, -50%);
       font-size: 18px;
+      color: #ccc;
       line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-word;
+      letter-spacing: 0.03em;
+      text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
     }
 
-    .original-text {
-      color: #aaa;
-      position: absolute;
-      z-index: 1;
-    }
-
-    .typed-text {
-      color: #000;
-      position: absolute;
-      z-index: 2;
-      pointer-events: none;
+    .highlight {
+      color: black;
+      text-shadow: none;
     }
 
     .typing-input {
@@ -62,9 +52,9 @@
       background: transparent;
       border: none;
       outline: none;
-      color: transparent;
-      text-shadow: 0 0 0 #555;
-      z-index: 3;
+      color: #555;
+      letter-spacing: 0.02em;
+      z-index: 1;
     }
 
     .left-box {
@@ -82,72 +72,125 @@
       height: 100%;
     }
 
-    .media-container img,
-    .media-container iframe {
+    .media-container iframe, .media-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border: none;
     }
+
+    .mode-button {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      z-index: 3;
+      background: rgba(255,255,255,0.7);
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <button class="mode-button" onclick="loadTypingMode()">타이핑 연습 시작</button>
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
-
-    <!-- 출력용 텍스트 -->
-    <div class="typing-output">
-      <div id="originalText" class="original-text"></div>
-      <div id="typedText" class="typed-text"></div>
-    </div>
-
-    <input id="input" class="typing-input" type="text" placeholder="Type here..." autocomplete="off" />
+    <div id="output" class="typing-output"></div>
+    <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
 
   <script>
     const input = document.getElementById("input");
-    const originalText = document.getElementById("originalText");
-    const typedText = document.getElementById("typedText");
+    const output = document.getElementById("output");
 
-    let sentences = [
-      "나는 오늘도 이 길을 걸어가고 있어.",
-      "별이 빛나는 밤에 우리는 마주쳤지.",
-      "그대의 미소는 내 하루를 밝혀주는 빛.",
-      "아무도 모르게 내 마음은 그대를 향하고 있었어.",
-      "우리의 이야기는 지금 시작되고 있어."
+    let typingLines = [];
+    let currentLineIndex = 0;
+    let currentMode = "free"; // "free" or "typing"
+    let previewLine = "";
+
+    const sampleLines = [
+      "나는 너를 생각하며 하루를 시작해.",
+      "작은 바람에도 마음이 흔들려.",
+      "밤하늘의 별처럼 너는 반짝여.",
+      "기억 속 너의 미소가 그리워진다.",
+      "우리 함께한 시간은 언제나 소중해.",
+      "가끔은 울고 싶을 만큼 보고 싶어.",
+      "그날의 말들이 자꾸 떠오른다.",
+      "이 노래는 너에게 바치는 마음이야.",
+      "시간이 지나도 널 잊지 못할 거야.",
+      "이 거리 어디에서도 네가 보일 것 같아.",
+      "차가운 바람이 내 마음을 흔든다.",
+      "사랑이라는 말이 아직 낯설어.",
+      "잊으려 해도 잊혀지지 않아.",
+      "혼자 걷는 길이 점점 익숙해져.",
+      "눈 감으면 떠오르는 너의 눈동자."
     ];
 
-    let currentSentence = "";
-    let currentIndex = 0;
+    input.addEventListener("input", function () {
+      if (currentMode === "typing") {
+        const typed = input.value;
+        const target = typingLines[currentLineIndex] || "";
+        let result = "";
 
-    function loadNextSentence() {
-      currentSentence = sentences[Math.floor(Math.random() * sentences.length)];
-      originalText.textContent = currentSentence;
-      typedText.textContent = "";
-      input.value = "";
-      currentIndex = 0;
-    }
+        for (let i = 0; i < target.length; i++) {
+          const c = target[i];
+          if (i < typed.length) {
+            result += `<span class="highlight">${c}</span>`;
+          } else {
+            result += c;
+          }
+        }
 
-    loadNextSentence();
+        output.innerHTML = result;
+      }
+    });
 
-    input.addEventListener("input", () => {
-      let typed = input.value;
-      let corrected = "";
-      for (let i = 0; i < typed.length; i++) {
-        if (i < currentSentence.length) {
-          corrected += currentSentence[i];
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        if (currentMode === "typing") {
+          const target = typingLines[currentLineIndex] || "";
+          output.innerHTML += "\n";
+          currentLineIndex++;
+          if (currentLineIndex < typingLines.length) {
+            input.value = "";
+            input.placeholder = typingLines[currentLineIndex];
+            output.textContent = typingLines.slice(0, currentLineIndex).join("\n");
+          } else {
+            currentMode = "free";
+            input.placeholder = "Type here and press Enter...";
+            input.value = "";
+            output.textContent = "";
+          }
+        } else {
+          const text = input.value;
+          input.value = "";
+          let i = 0;
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              output.textContent += text[i];
+              i++;
+            } else {
+              clearInterval(interval);
+              output.textContent += "\n";
+            }
+          }, 50);
         }
       }
-      typedText.textContent = corrected;
     });
 
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        loadNextSentence();
-      }
-    });
+    function loadTypingMode() {
+      currentMode = "typing";
+      typingLines = shuffle([...sampleLines]).slice(0, 15);
+      currentLineIndex = 0;
+      input.value = "";
+      input.placeholder = typingLines[0];
+      output.textContent = "";
+    }
 
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
@@ -171,8 +214,13 @@
         alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
       }
     }
+
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
   </script>
 </body>
 </html>
+
 
 
