@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
+      padding: 0;
       background: url("KakaoTalk_20250728_132331714.png") no-repeat center 44%;
       background-size: cover;
       background-attachment: fixed;
@@ -29,17 +31,15 @@
       transform: translate(-50%, -50%);
       font-size: 18px;
       color: #ccc;
-      line-height: 1.6;
+      line-height: 1.8;
       white-space: pre-wrap;
       word-break: break-word;
       letter-spacing: 0.03em;
-      text-shadow: 0.3px 0.3px 0 #ccc;
       z-index: 1;
     }
 
-    .highlight {
-      color: black;
-      text-shadow: none;
+    .typing-output .typed {
+      color: #000;
     }
 
     .typing-input {
@@ -72,31 +72,31 @@
       height: 100%;
     }
 
-    .media-container iframe, .media-container img {
+    .media-container iframe,
+    .media-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border: none;
     }
 
-    .mode-button {
+    .mode-btn {
       position: absolute;
-      top: 5%;
-      right: 5%;
-      z-index: 3;
-      background: rgba(255,255,255,0.7);
+      top: 3%;
+      left: 3%;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.6);
       border: none;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-family: inherit;
+      font-family: 'Nanum Myeongjo', serif;
       cursor: pointer;
+      z-index: 5;
       border-radius: 6px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <button class="mode-button" onclick="loadTypingMode()">타이핑 연습 시작</button>
+    <button class="mode-btn" onclick="loadRandomScript()">문장 연습</button>
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
@@ -108,89 +108,111 @@
     const input = document.getElementById("input");
     const output = document.getElementById("output");
 
-    let typingLines = [];
-    let currentLineIndex = 0;
-    let currentMode = "free"; // "free" or "typing"
-    let previewLine = "";
+    let lines = [];        // 전체 문장 15줄
+    let currentLine = 0;   // 현재 타이핑 중인 줄
+    let practiceMode = false;
 
-    const sampleLines = [
-      "나는 너를 생각하며 하루를 시작해.",
-      "작은 바람에도 마음이 흔들려.",
-      "밤하늘의 별처럼 너는 반짝여.",
-      "기억 속 너의 미소가 그리워진다.",
-      "우리 함께한 시간은 언제나 소중해.",
-      "가끔은 울고 싶을 만큼 보고 싶어.",
-      "그날의 말들이 자꾸 떠오른다.",
-      "이 노래는 너에게 바치는 마음이야.",
-      "시간이 지나도 널 잊지 못할 거야.",
-      "이 거리 어디에서도 네가 보일 것 같아.",
-      "차가운 바람이 내 마음을 흔든다.",
-      "사랑이라는 말이 아직 낯설어.",
-      "잊으려 해도 잊혀지지 않아.",
-      "혼자 걷는 길이 점점 익숙해져.",
-      "눈 감으면 떠오르는 너의 눈동자."
+    const longSentences = [
+      "햇살 가득한 오후, 그녀는 좋아하는 노래를 들으며 공원 벤치에 앉아 있었다.",
+      "작은 새들이 나뭇가지 사이를 날아다니고, 바람은 나뭇잎을 부드럽게 흔들었다.",
+      "그 순간만큼은 세상에 혼자 있는 것처럼 고요하고 평화로웠다.",
+      "그는 다정한 눈빛으로 나를 바라보며 조용히 말했다.",
+      "추억은 늘 그렇게 사소한 순간에 스며들어 온다.",
+      "너의 따뜻한 말 한마디가 하루를 환하게 비춘다.",
+      "우리는 그렇게 조용히 서로의 마음에 머물렀다.",
+      "계절이 바뀌는 소리는 마음의 변화를 닮아 있다.",
+      "서로를 이해하려는 노력은 사랑의 또 다른 이름이다.",
+      "차가운 바람 사이로 스며드는 너의 온기가 그리워진다.",
+      "그 날의 웃음소리는 아직도 귓가에 선명하다.",
+      "말없이 내민 손은 그 어떤 말보다도 깊은 위로가 되었다.",
+      "비 내리는 거리를 함께 걷던 그 장면이 자꾸 떠오른다.",
+      "끝이 없는 것 같던 밤도 결국 아침을 맞이하게 된다.",
+      "사랑은 결국 마음을 담아 전하는 작은 행동에서 시작된다."
     ];
 
-    input.addEventListener("input", function () {
-      if (currentMode === "typing") {
-        const typed = input.value;
-        const target = typingLines[currentLineIndex] || "";
-        let result = "";
+    function loadRandomScript() {
+      lines = [...longSentences];
+      currentLine = 0;
+      practiceMode = true;
+      renderOutput();
+      renderPreview();
+    }
 
-        for (let i = 0; i < target.length; i++) {
-          const c = target[i];
-          if (i < typed.length) {
-            result += `<span class="highlight">${c}</span>`;
-          } else {
-            result += c;
-          }
+    function renderOutput() {
+      output.innerHTML = lines.map((line, index) => {
+        if (index < currentLine) {
+          return `<div class="typed">${line}</div>`;
+        } else if (index === currentLine) {
+          return `<div id="current-line">${colorizeTypedPortion(line, "")}</div>`;
+        } else {
+          return `<div>${line}</div>`;
         }
+      }).join("\n");
+    }
 
-        output.innerHTML = result;
+    function renderPreview() {
+      if (practiceMode && currentLine < lines.length) {
+        input.value = "";
+        input.placeholder = lines[currentLine];
+      }
+    }
+
+    function colorizeTypedPortion(line, typed) {
+      let html = "";
+      for (let i = 0; i < line.length; i++) {
+        if (typed[i]) {
+          html += `<span class="typed">${line[i]}</span>`;
+        } else {
+          html += `<span>${line[i]}</span>`;
+        }
+      }
+      return html;
+    }
+
+    input.addEventListener("input", function () {
+      if (!practiceMode || currentLine >= lines.length) return;
+      const typed = input.value;
+      const correct = lines[currentLine];
+      const corrected = correct.slice(0, typed.length);
+      const currentEl = document.getElementById("current-line");
+      if (currentEl) {
+        currentEl.innerHTML = colorizeTypedPortion(correct, corrected);
       }
     });
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        if (currentMode === "typing") {
-          const target = typingLines[currentLineIndex] || "";
-          output.innerHTML += "\n";
-          currentLineIndex++;
-          if (currentLineIndex < typingLines.length) {
-            input.value = "";
-            input.placeholder = typingLines[currentLineIndex];
-            output.textContent = typingLines.slice(0, currentLineIndex).join("\n");
+        if (practiceMode && currentLine < lines.length) {
+          currentLine++;
+          if (currentLine === lines.length) {
+            setTimeout(() => {
+              lines = [];
+              output.innerHTML = "";
+              input.placeholder = "Type here and press Enter...";
+              practiceMode = false;
+            }, 800);
           } else {
-            currentMode = "free";
-            input.placeholder = "Type here and press Enter...";
-            input.value = "";
-            output.textContent = "";
+            renderOutput();
+            renderPreview();
           }
         } else {
-          const text = input.value;
+          // 자유 입력 모드
+          const text = input.value.trim();
+          if (!text) return;
           input.value = "";
           let i = 0;
           const interval = setInterval(() => {
             if (i < text.length) {
-              output.textContent += text[i];
+              output.innerHTML += text[i];
               i++;
             } else {
               clearInterval(interval);
-              output.textContent += "\n";
+              output.innerHTML += "<br>";
             }
-          }, 50);
+          }, 40);
         }
       }
     });
-
-    function loadTypingMode() {
-      currentMode = "typing";
-      typingLines = shuffle([...sampleLines]).slice(0, 15);
-      currentLineIndex = 0;
-      input.value = "";
-      input.placeholder = typingLines[0];
-      output.textContent = "";
-    }
 
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
@@ -202,25 +224,5 @@
         let embedUrl = url;
         if (url.includes("watch?v=")) {
           const id = url.split("watch?v=")[1].split("&")[0];
-          embedUrl = `https://www.youtube.com/embed/${id}`;
-        } else if (url.includes("youtu.be")) {
-          const id = url.split("youtu.be/")[1];
-          embedUrl = `https://www.youtube.com/embed/${id}`;
-        }
-        box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = `<img src="${url}" alt="media">`;
-      } else {
-        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
-      }
-    }
-
-    function shuffle(arr) {
-      return arr.sort(() => Math.random() - 0.5);
-    }
-  </script>
-</body>
-</html>
-
-
+          embedUrl = `https://www.youtube.com/embed/$
 
