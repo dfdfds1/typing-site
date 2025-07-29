@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
@@ -36,6 +37,12 @@
       word-break: break-word;
       letter-spacing: 0.03em;
       z-index: 1;
+    }
+
+    .typing-output div {
+      margin: 0;
+      padding: 0;
+      line-height: 1.8;
     }
 
     .typing-output .typed {
@@ -108,8 +115,8 @@
     const input = document.getElementById("input");
     const output = document.getElementById("output");
 
-    let lines = [];        // 전체 문장 15줄
-    let currentLine = 0;   // 현재 타이핑 중인 줄
+    let lines = [];
+    let currentLine = 0;
     let practiceMode = false;
 
     const longSentences = [
@@ -147,7 +154,7 @@
         } else {
           return `<div>${line}</div>`;
         }
-      }).join("\n");
+      }).join("");
     }
 
     function renderPreview() {
@@ -196,14 +203,13 @@
             renderPreview();
           }
         } else {
-          // 자유 입력 모드
           const text = input.value.trim();
           if (!text) return;
           input.value = "";
           let i = 0;
           const interval = setInterval(() => {
             if (i < text.length) {
-              output.innerHTML += text[i];
+              output.innerHTML += `<span style="color:#000">${text[i]}</span>`;
               i++;
             } else {
               clearInterval(interval);
@@ -217,7 +223,6 @@
     function insertMedia() {
       const url = prompt("GIF 이미지 주소나 YouTube 링크를 입력하세요:");
       const box = document.getElementById("mediaBox");
-
       if (!url) return;
 
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -239,4 +244,3 @@
   </script>
 </body>
 </html>
-
