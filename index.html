@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-
   <style>
     * { box-sizing: border-box; }
 
@@ -23,27 +22,23 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      z-index: 1;
-    }
-
-    /* 🌟 반짝이 효과 레이어 */
-    .sparkle-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background-image: radial-gradient(white 1px, transparent 1px);
-      background-size: 4px 4px;
-      opacity: 0.12;
-      animation: sparkleMove 3s linear infinite;
       z-index: 0;
     }
 
-    @keyframes sparkleMove {
-      0% { background-position: 0 0; }
-      100% { background-position: 100% 100%; }
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      animation: sparkle 3s infinite;
+    }
+
+    @keyframes sparkle {
+      0%   { opacity: 0; transform: scale(0.8); }
+      50%  { opacity: 0.8; transform: scale(1.4); }
+      100% { opacity: 0; transform: scale(0.8); }
     }
 
     .typing-output {
@@ -61,15 +56,8 @@
       z-index: 2;
     }
 
-    .typing-output div {
-      margin: 0;
-      padding: 0;
-      line-height: 1.8;
-    }
-
-    .typing-output .typed {
-      color: #000;
-    }
+    .typing-output div { margin: 0; padding: 0; line-height: 1.8; }
+    .typing-output .typed { color: #000; }
 
     .typing-input {
       position: absolute;
@@ -101,18 +89,16 @@
       height: 100%;
     }
 
-    .media-container iframe,
-    .media-container img {
+    .media-container iframe, .media-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border: none;
     }
 
-    .mode-btn {
+    .mode-btn, .upload-btn {
       position: absolute;
       top: 14.6%;
-      left: 10.5%;
       font-size: 43px;
       padding: 15px 21px;
       background: transparent;
@@ -120,25 +106,33 @@
       color: transparent;
       cursor: pointer;
       font-family: 'Nanum Myeongjo', serif;
-      z-index: 10;
+      z-index: 5;
     }
 
-    .mode-btn:hover {
-      text-decoration: underline;
-    }
+    .mode-btn { left: 10.5%; }
+    .upload-btn { left: 20.5%; }
   </style>
 </head>
 <body>
-  <!-- 🌟 반짝이 배경 레이어 -->
-  <div class="sparkle-overlay"></div>
-
+  <input type="file" id="imageUpload" accept="image/*" style="display:none" />
   <div class="container">
-    <button class="mode-btn" onclick="loadRandomScript()">문장 연습</button>
+    <!-- 반짝이 효과 -->
+    <script>
+      for (let i = 0; i < 30; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = (Math.random() * 5) + 's';
+        document.body.appendChild(sparkle);
+      }
+    </script>
 
+    <button class="mode-btn" onclick="loadRandomScript()">문장 연습</button>
+    <button class="upload-btn" onclick="openCustomInput()">문장 업로드</button>
     <div class="left-box" onclick="insertMedia()">
       <div class="media-container" id="mediaBox"></div>
     </div>
-
     <div id="output" class="typing-output"></div>
     <input id="input" class="typing-input" type="text" placeholder="Type here and press Enter..." />
   </div>
@@ -146,27 +140,16 @@
   <script>
     const input = document.getElementById("input");
     const output = document.getElementById("output");
-
     let lines = [];
     let currentLine = 0;
     let practiceMode = false;
 
     const sentencePool = [
       "햇살 가득한 오후, 그녀는 좋아하는 노래를 들으며 공원 벤치에 앉아 있었다.",
-      "시즌을 이해하려는 노력은 사람의 또 다른 이름이다.",
-      "그 날의 웃음소리는 아직도 귓가에 선명하다.",
       "작은 새들이 나뭇가지 사이를 날아다니고, 바람은 나뭇잎을 부드럽게 흔들었다.",
-      "그 순간만큼은 세상에 혼자 있는 것처럼 고요하고 평화로웠다.",
-      "우리는 늘 그렇게 서로를 모른 채 지나치기 일쑤였다.",
-      "구속은 늘 그렇게 서서히 단단히 스며들어 온다.",
-      "그는 다정한 눈빛으로 나를 바라보며 조용히 말했다.",
       "사랑은 결국 마음을 담아 전하는 작은 행동에서 시작된다.",
       "세상이 어깨를 스치는 정도로 바쁘게 흘러갈 때가 있다.",
-      "낯선 거리에서도 익숙한 마음을 발견할 수 있다.",
-      "비 내리는 거리를 함께 걷던 그 장면이 자꾸 떠오른다.",
-      "내 버리는 기억을 덮고 긴 잠에 자주 머문다.",
-      "창밖을 바라보며 흐르는 그 날의 기억은 늘 따뜻하다.",
-      "우리는 그렇게 조용히 서로의 마음에 머물렀다."
+      "비 내리는 거리를 함께 걷던 그 장면이 자꾸 떠오른다."
     ];
 
     function shuffleAndPick(array, count) {
@@ -176,6 +159,16 @@
 
     function loadRandomScript() {
       lines = shuffleAndPick(sentencePool, 15);
+      currentLine = 0;
+      practiceMode = true;
+      renderOutput();
+      renderPreview();
+    }
+
+    function openCustomInput() {
+      const text = prompt("직접 입력할 문장을 붙여넣어 주세요 (줄바꿈 포함):");
+      if (!text) return;
+      lines = text.split("\n").filter(line => line.trim() !== "");
       currentLine = 0;
       practiceMode = true;
       renderOutput();
@@ -258,11 +251,11 @@
     });
 
     function insertMedia() {
-      const url = prompt("GIF, 이미지 주소 또는 YouTube 링크를 입력하세요:");
+      const choice = prompt("1. YouTube 링크\n2. GIF/이미지 URL\n3. 이미지 파일 업로드\n선택 (1/2/3):");
       const box = document.getElementById("mediaBox");
-      if (!url) return;
-
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      if (choice === "1") {
+        const url = prompt("YouTube 링크를 입력하세요:");
+        if (!url) return;
         let embedUrl = url;
         if (url.includes("watch?v=")) {
           const id = url.split("watch?v=")[1].split("&")[0];
@@ -272,13 +265,34 @@
           embedUrl = `https://www.youtube.com/embed/${id}`;
         }
         box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
-        box.innerHTML = `<img src="${url}" alt="media">`;
-      } else {
-        alert("지원되지 않는 형식입니다. GIF, 이미지, YouTube 링크만 지원됩니다.");
+      } else if (choice === "2") {
+        const url = prompt("이미지 또는 GIF 링크를 입력하세요:");
+        if (!url) return;
+        if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
+          box.innerHTML = `<img src="${url}" alt="media">`;
+        } else {
+          alert("지원되지 않는 형식입니다.");
+        }
+      } else if (choice === "3") {
+        document.getElementById("imageUpload").click();
       }
     }
+
+    document.getElementById("imageUpload").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const box = document.getElementById("mediaBox");
+          box.innerHTML = `<img src="${e.target.result}" alt="media">`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("이미지 파일만 업로드할 수 있습니다.");
+      }
+    });
   </script>
 </body>
 </html>
+
 
