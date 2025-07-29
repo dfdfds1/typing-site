@@ -224,5 +224,19 @@
         let embedUrl = url;
         if (url.includes("watch?v=")) {
           const id = url.split("watch?v=")[1].split("&")[0];
-          embedUrl = `https://www.youtube.com/embed/$
+          embedUrl = `https://www.youtube.com/embed/${id}`;
+        } else if (url.includes("youtu.be")) {
+          const id = url.split("youtu.be/")[1];
+          embedUrl = `https://www.youtube.com/embed/${id}`;
+        }
+        box.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+      } else if (url.match(/\.(gif|jpg|jpeg|png)$/i)) {
+        box.innerHTML = `<img src="${url}" alt="media">`;
+      } else {
+        alert("지원되지 않는 형식입니다. GIF나 YouTube 링크만 지원됩니다.");
+      }
+    }
+  </script>
+</body>
+</html>
 
